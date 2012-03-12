@@ -17,13 +17,12 @@ function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) 
     $className = 'TimeSpan' . strtoupper($lang);
     if (class_exists($className)) {
         $timeSpan = new $className();
-        $timeSpan->setStartDate($date)->showSuffix($suffix);
-        return $timeSpan->getTimeSpan();
+        if (!($timeSpan instanceof TimeSpan)) $timeSpan = new TimeSpanEN();
     } else {
         $timeSpan = new TimeSpanEN();
-        $timeSpan->setStartDate($date)->showSuffix($suffix);
-        return $timeSpan->getTimeSpan();
     }
+    $timeSpan->setStartDate($date)->showSuffix($suffix);
+    return $timeSpan->getTimeSpan();
 }
 
 abstract class TimeSpan {
