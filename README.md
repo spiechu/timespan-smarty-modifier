@@ -18,14 +18,14 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 In Your PHP script assign DateTime object or timestamp integer for example like:
 
-  $smarty->assign('date', new DateTime());
+    $smarty->assign('date', new DateTime());
   
 and then in template:
 
-  {$date|timespan}
+    {$date|timespan}
 
 You can modify language and suffix 'ago' displaying for example:
 
-  {$date|timespan:'PL'}
-  {$date|timespan:'EN':false}
+    {$date|timespan:'PL'}
+    {$date|timespan:'EN':false}
 
