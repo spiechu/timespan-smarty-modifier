@@ -92,6 +92,7 @@ abstract class TimeSpan {
      * Returns unit type and unit count array.
      * 
      * @return array 
+     * @throws Spiechu\TimeSpan\TimeSpanException
      */
     protected function getInterval() {
         $curDate = new \DateTime('now');

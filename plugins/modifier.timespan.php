@@ -10,10 +10,11 @@
 */
 
 /**
- * @param DateTime|int $startDateTime DateTime or timestamp to compute date interval
+ * @param \DateTime|int $startDateTime \DateTime or timestamp to compute date interval
  * @param string $lang language of message
  * @param bool $suffix show suffix?
  * @return string 
+ * @throws Spiechu\TimeSpan\TimeSpanException
  */
 function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) {
     $className = 'Spiechu\TimeSpan\TimeSpan' . strtoupper($lang);
