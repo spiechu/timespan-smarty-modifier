@@ -29,20 +29,29 @@ abstract class TimeSpan {
     abstract protected function getUnit($howMany, $unitSymbol);
 
     /**
-     * Returns translated 'ago' string.
+     * Returns translated 'ago' suffix.
      * 
      * @return string
      */
     abstract protected function getSuffix();
 
     /**
+     * Show 'ago' suffix?
+     * 
      * @param bool $suffix 
+     * @return TimeSpan fluent interface
      */
     public function showSuffix($suffix) {
         $this->_showSuffix = $suffix;
         return $this;
     }
 
+    /**
+     * Start date setter to compute date interval.
+     * 
+     * @param \DateTime $startDate
+     * @return TimeSpan fluent interface
+     */
     public function setStartDate(\DateTime $startDate) {
         $this->_startDate = $startDate;
         return $this;
@@ -70,6 +79,11 @@ abstract class TimeSpan {
         }
     }
 
+    /**
+     * Returns unit type and unit count array.
+     * 
+     * @return array 
+     */
     protected function getInterval() {
         $curDate = new \DateTime('now');
         $diff = $curDate->diff($this->_startDate);
@@ -91,8 +105,7 @@ abstract class TimeSpan {
         } elseif ($diff->s > 0) {
             $unit = 's';
             $counter = ($diff->s > $this->_justNow) ? $diff->s : -1;
-        }
-        else {
+        } else {
             throw new TimeSpanException('Invalid DateInterval');
         }
 
