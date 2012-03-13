@@ -8,6 +8,7 @@ Polish numeral inflection is well known for its variety. It has 3 numeral inflec
 ## Requirements
 
 Modifier is being written on Smarty 3.1.8, so I can't guarantee it will work on version < 3.0.
+You also need at least PHP 5.3 since library uses namespaces.
 
 ## Installation
 
@@ -18,7 +19,7 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 In Your PHP script assign DateTime object or timestamp integer for example like:
 
-    $smarty->assign('date', new DateTime());
+    $smarty->assign('date', new DateTime('1 second ago'));
   
 and then in template:
 
