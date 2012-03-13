@@ -3,7 +3,11 @@
 error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors', 1);
 
-require_once('Smarty/libs/Smarty.class.php');
+require_once 'SplClassLoader.php';
+$classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
+$classLoader->register();
+
+require_once 'Smarty/libs/Smarty.class.php';
 $smarty = new Smarty();
 
 $smarty->setTemplateDir('templates');
