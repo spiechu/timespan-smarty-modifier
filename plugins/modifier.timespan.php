@@ -11,15 +11,17 @@
 
 /**
  * @param \DateTime|int $startDateTime \DateTime or timestamp to compute date interval
- * @param string $lang language of message
+ * @param string $lang language of message; if can't find proper language - falls back on english
  * @param bool $suffix show suffix?
  * @return string 
- * @throws Spiechu\TimeSpan\TimeSpanException
+ * @throws Spiechu\TimeSpan\TimeSpanException when can't set up date
  */
 function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) {
     $className = 'Spiechu\TimeSpan\TimeSpan' . strtoupper($lang);
     if (class_exists($className)) {
         $timeSpan = new $className();
+        
+        // double check if class extends abstract TimeSpan class
         if (!($timeSpan instanceof Spiechu\TimeSpan\TimeSpan)) {
             $timeSpan = new Spiechu\TimeSpan\TimeSpanEN();
         }
@@ -29,6 +31,8 @@ function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) 
 
     if ($startDateTime instanceof \DateTime) {
         $date = $startDateTime;
+        
+    // if it's int, assume it's timestamp
     } elseif (is_int($startDateTime)) {
         $date = new \DateTime();
         $date->setTimestamp($startDateTime);
