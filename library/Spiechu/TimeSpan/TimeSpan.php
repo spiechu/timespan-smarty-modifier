@@ -80,9 +80,11 @@ abstract class TimeSpan {
         if ($interval['counter'] > 1) {
             return $interval['counter'] . ' ' . $timeUnit . $suffix;
         } elseif ($interval['counter'] == 1) {
+            
             // in case we don't have to show number of units
             return $timeUnit . $suffix;
         } else {
+            
             // in case of -1 'just now' offset
             return $timeUnit;
         }
