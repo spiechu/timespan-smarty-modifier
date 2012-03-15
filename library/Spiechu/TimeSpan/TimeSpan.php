@@ -85,7 +85,7 @@ abstract class TimeSpan {
             return $timeUnit . $suffix;
         } else {
             
-            // in case of -1 'just now' offset
+            // in case of 'just now' -1 offset we don't need 'ago' suffix
             return $timeUnit;
         }
     }
@@ -117,6 +117,8 @@ abstract class TimeSpan {
         } elseif ($diff->s > 0) {
             $unit = 's';
             $counter = ($diff->s > $this->_justNow) ? $diff->s : -1;
+            
+        // in case of bad interval (less than 1 second)
         } else {
             throw new TimeSpanException('Invalid DateInterval');
         }
