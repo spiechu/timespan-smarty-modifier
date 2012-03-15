@@ -11,7 +11,7 @@
 
 namespace Spiechu\TimeSpan;
 
-abstract class TimeSpan {
+abstract class AbstractTimeSpan {
 
     /**
      * @var int seconds to show 'just now' instead of exact units 
@@ -48,7 +48,7 @@ abstract class TimeSpan {
      * Show 'ago' suffix?
      * 
      * @param bool $suffix 
-     * @return TimeSpan fluent interface
+     * @return AbstractTimeSpan fluent interface
      */
     public function showSuffix($suffix) {
         $this->_showSuffix = $suffix;
@@ -59,7 +59,7 @@ abstract class TimeSpan {
      * Start date setter to compute date interval.
      * 
      * @param \DateTime $startDate
-     * @return TimeSpan fluent interface
+     * @return AbstractTimeSpan fluent interface
      */
     public function setStartDate(\DateTime $startDate) {
         $this->_startDate = $startDate;

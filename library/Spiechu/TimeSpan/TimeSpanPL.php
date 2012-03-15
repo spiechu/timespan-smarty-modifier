@@ -11,7 +11,7 @@
 
 namespace Spiechu\TimeSpan;
 
-class TimeSpanPL extends TimeSpan {
+class TimeSpanPL extends AbstractTimeSpan {
 
     private $_units = array(
         -1 => array('s' => 'przed chwilą'),

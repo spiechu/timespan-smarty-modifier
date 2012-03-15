@@ -22,7 +22,7 @@ function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) 
         $timeSpan = new $className();
         
         // double check if class extends abstract TimeSpan class
-        if (!($timeSpan instanceof Spiechu\TimeSpan\TimeSpan)) {
+        if (!($timeSpan instanceof Spiechu\TimeSpan\AbstractTimeSpan)) {
             $timeSpan = new Spiechu\TimeSpan\TimeSpanEN();
         }
     } else {

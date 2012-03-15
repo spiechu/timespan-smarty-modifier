@@ -11,7 +11,7 @@
 
 namespace Spiechu\TimeSpan;
 
-class TimeSpanEN extends TimeSpan {
+class TimeSpanEN extends AbstractTimeSpan {
 
     private $_units = array(
         -1 => array('s' => 'just now'),
