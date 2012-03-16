@@ -270,7 +270,7 @@ abstract class AbstractTimeSpan {
      * @return bool
      */
     protected function almostFullUnit($actualUnit, $fullUnit) {
-        return ($actualUnit >= $fullUnit - ceil($fullUnit * ($this->_almostFullTolerance / 100))) ? true : false;
+        return ($actualUnit >= $fullUnit - ceil($fullUnit * ($this->_almostFullTolerance / 100.0))) ? true : false;
     }
 
 }
