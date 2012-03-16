@@ -43,9 +43,10 @@ abstract class AbstractTimeSpan {
      * 
      * @param int $howMany -1 means 'just now' unit
      * @param string $unitSymbol it can be s,i,h,d,m,y
+     * @param bool $half
      * @return string
      */
-    abstract protected function getUnit($howMany, $unitSymbol);
+    abstract protected function getUnit($howMany, $unitSymbol, $half);
 
     /**
      * Returns translated 'almost' prefix.
@@ -97,9 +98,9 @@ abstract class AbstractTimeSpan {
      */
     public function getTimeSpan() {
         $interval = $this->getInterval();
-        $timeUnit = $this->getUnit($interval['counter'], $interval['unit']);
+        $timeUnit = $this->getUnit($interval['counter'], $interval['unit'], $interval['half']);
 
-        $prefix = ($interval['almost'] || $interval['half'] || $interval['approx']) ? $this->getPrefix() . ' ' : '';
+        $prefix = ($interval['approx']) ? $this->getPrefix() . ' ' : '';
         $half = ($interval['half'] && $interval['counter'] > 0) ? $this->getHalf() . ' ' : '';
         $suffix = ($this->_showSuffix) ? ' ' . $this->getSuffix() : '';
 
