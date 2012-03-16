@@ -5,6 +5,20 @@ Currently only english and polish languages are supported.
 
 Polish numeral inflection is well known for its variety. It has 3 numeral inflection forms. This library tries to cope with this task.
 
+## Features
+
+* `just now` when time interval is <= 10 default seconds
+* `about half minute ago` when within 30 seconds +/- 10% default tolerance
+* `about a minute ago` when near full minute (default -10% tolerance)
+* `a minute ago` when at least 60 seconds and less than 90 seconds - 10% tolerance
+* `about a minute and half ago` when 90 seconds +/- 10% tolerance
+* `2 minutes ago`
+* `about 2 and half minutes ago` when 120 seconds + (30 +/- 10% tolerance)
+
+Notice that `about` shows up when some time is approximated.
+
+There is also a special polish expression for 1.5 unit called `półtora`/`półtorej`. Those special cases are also included in library.                                                                                 
+
 ## Requirements
 
 Modifier is being written on Smarty 3.1.8, so I can't guarantee it will work on version < 3.0.
