@@ -41,7 +41,7 @@ class TimeSpanPL extends AbstractTimeSpan {
     );
     
     private $_specialUnits = array(
-        'poltora' => array('s' => 'półtorej sekundy',
+        'poltora' => array('s' => 'półtorej sekundy', // currently not used
             'i' => 'półtorej minuty',
             'h' => 'półtorej godziny',
             'd' => 'półtora dnia',
