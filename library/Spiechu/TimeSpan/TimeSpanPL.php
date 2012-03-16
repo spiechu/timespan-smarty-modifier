@@ -39,8 +39,17 @@ class TimeSpanPL extends AbstractTimeSpan {
             'm' => 'miesięcy',
             'y' => 'lat')
     );
+    
+    private $_specialUnits = array(
+        'poltora' => array('s' => 'półtorej sekundy',
+            'i' => 'półtorej minuty',
+            'h' => 'półtorej godziny',
+            'd' => 'półtora dnia',
+            'm' => 'półtora miesiąca',
+            'y' => 'półtora roku')
+    );
 
-    protected function getUnit($howMany, $unitSymbol) {
+    protected function getUnit($howMany, $unitSymbol, $half) {
         if ($howMany > 21) {
             $howMany = substr($howMany, -1);
             if ($howMany <= 1) {
@@ -54,6 +63,8 @@ class TimeSpanPL extends AbstractTimeSpan {
             $howMany = 5;
         } elseif ($howMany >= 2) {
             $howMany = 2;
+        } elseif ($howMany == 1 && $half == true) {
+            return $this->_specialUnits['poltora'][$unitSymbol];
         }
         return $this->_units[$howMany][$unitSymbol];
     }
