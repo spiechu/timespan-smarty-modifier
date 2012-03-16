@@ -34,7 +34,7 @@ abstract class AbstractTimeSpan {
     protected $_halfTolerance = 15.0;
 
     /**
-     * @var float percentage tolerance to mark 'almost [unit]' true instead if exact units 
+     * @var float percentage tolerance to mark almost full unit true
      */
     protected $_almostFullTolerance = 10.0;
 
