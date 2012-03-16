@@ -15,6 +15,11 @@ class TimeSpanEN extends AbstractTimeSpan {
 
     private $_units = array(
         -1 => array('s' => 'just now'),
+        0 => array('i' => 'about half minute',
+            'h' => 'about half hour',
+            'd' => 'about half day',
+            'm' => 'about half month',
+            'y' => 'about half year'),
         1 => array('s' => 'a second',
             'i' => 'a minute',
             'h' => 'an hour',
@@ -33,6 +38,14 @@ class TimeSpanEN extends AbstractTimeSpan {
         if ($howMany > 1)
             $howMany = 2;
         return $this->_units[$howMany][$unitSymbol];
+    }
+
+    protected function getPrefix() {
+        return 'almost';
+    }
+
+    protected function getHalf() {
+        return 'and half';
     }
 
     protected function getSuffix() {
