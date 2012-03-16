@@ -34,7 +34,7 @@ abstract class AbstractTimeSpan {
     protected $_halfTolerance = 15.0;
 
     /**
-     * @var float percentage tolerance to show 'almost ...' instead of exact units 
+     * @var float percentage tolerance to mark 'almost [unit]' true instead if exact units 
      */
     protected $_almostFullTolerance = 10.0;
 
@@ -46,13 +46,6 @@ abstract class AbstractTimeSpan {
      * @return string
      */
     abstract protected function getUnit($howMany, $unitSymbol);
-
-    /**
-     * Returns translated 'ago' suffix.
-     * 
-     * @return string
-     */
-    abstract protected function getSuffix();
 
     /**
      * Returns translated 'almost' prefix.
@@ -67,6 +60,13 @@ abstract class AbstractTimeSpan {
      * @return string
      */
     abstract protected function getHalf();
+
+    /**
+     * Returns translated 'ago' suffix.
+     * 
+     * @return string
+     */
+    abstract protected function getSuffix();
 
     /**
      * Show 'ago' suffix?
@@ -230,11 +230,24 @@ abstract class AbstractTimeSpan {
             'almost' => $almostFull);
     }
 
+    /**
+     * Return true if actual unit is within half unit scope including tolerance.
+     * @param int $actualUnit
+     * @param int $fullUnit
+     * @return bool 
+     */
     protected function isHalfUnit($actualUnit, $fullUnit) {
         $halfUnit = floatval($fullUnit) / 2;
-        return ($actualUnit <= ($halfUnit - ($halfUnit * ($this->_halfTolerance / 100))) || $actualUnit >= ($halfUnit + ($halfUnit * ($this->_halfTolerance / 100)))) ? false : true;
+        $percentageUnit = $halfUnit * ($this->_halfTolerance / 100.0);
+        return ($actualUnit <= ($halfUnit - $percentageUnit) || $actualUnit >= ($halfUnit + $percentageUnit)) ? false : true;
     }
 
+    /**
+     * Return true if actual unit is near full unit scope including tolerance.
+     * @param int $actualUnit
+     * @param int $fullUnit
+     * @return bool
+     */
     protected function almostFullUnit($actualUnit, $fullUnit) {
         return ($actualUnit >= $fullUnit - ($fullUnit * ($this->_almostFullTolerance / 100))) ? true : false;
     }
