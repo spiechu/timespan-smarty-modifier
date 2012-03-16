@@ -34,7 +34,7 @@ class TimeSpanEN extends AbstractTimeSpan {
             'y' => 'years')
     );
 
-    protected function getUnit($howMany, $unitSymbol) {
+    protected function getUnit($howMany, $unitSymbol, $half) {
         if ($howMany > 1)
             $howMany = 2;
         return $this->_units[$howMany][$unitSymbol];
