@@ -15,6 +15,11 @@ class TimeSpanPL extends AbstractTimeSpan {
 
     private $_units = array(
         -1 => array('s' => 'przed chwilą'),
+        0 => array('i' => 'około pół minuty',
+            'h' => 'około pół godziny',
+            'd' => 'około pół dnia',
+            'm' => 'około pół miesiąca',
+            'y' => 'około pół roku'),
         1 => array('s' => 'sekundę',
             'i' => 'minutę',
             'h' => 'godzinę',
@@ -36,25 +41,29 @@ class TimeSpanPL extends AbstractTimeSpan {
     );
 
     protected function getUnit($howMany, $unitSymbol) {
-        switch ($howMany) {
-            case ($howMany > 21):
-                $howMany = substr($howMany, -1);
-                if ($howMany == 1) {
-                    $howMany = 5;
-                } else {
-
-                    // we've got only one last digit now
-                    return $this->getUnit($howMany, $unitSymbol);
-                }
-                break;
-            case ($howMany >= 5):
+        if ($howMany > 21) {
+            $howMany = substr($howMany, -1);
+            if ($howMany <= 1) {
                 $howMany = 5;
-                break;
-            case ($howMany >= 2):
-                $howMany = 2;
-                break;
+            } else {
+
+                // we've got only one last digit now
+                return $this->getUnit($howMany, $unitSymbol);
+            }
+        } elseif ($howMany >= 5) {
+            $howMany = 5;
+        } elseif ($howMany >= 2) {
+            $howMany = 2;
         }
         return $this->_units[$howMany][$unitSymbol];
+    }
+
+    protected function getPrefix() {
+        return 'prawie';
+    }
+
+    protected function getHalf() {
+        return 'i pół';
     }
 
     protected function getSuffix() {
