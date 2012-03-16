@@ -27,7 +27,13 @@ You also need at least PHP 5.3 since library uses namespaces.
 ## Installation
 
 All You need to do to use modifier is to put `modifier.timespan.php` into Your Smarty plugin folder.
-For the sake of readability, modifier file has been thrown into separate plugin folder instead of Smarty's `Smarty/libs/plugins` one. If You want to do that as well, use `$smarty->addPluginsDir('yourpluginsfolder');`.
+For the sake of readability, modifier file has been thrown into separate plugin folder instead of Smarty's `Smarty/libs/plugins` one. If You want to do that as well, use `$smarty->addPluginsDir('yourpluginsfolder');` in Your Smarty configuration section.
+
+Library also needs to be registered for autoload. It uses standard SplClassLoader, for example:
+
+    require_once 'SplClassLoader.php';
+    $classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
+    $classLoader->register();
 
 ## Usage
 
