@@ -36,6 +36,8 @@ $dates = array(
     new DateTime('40 second ago'),
     new DateTime('50 second ago'),
     new DateTime('55 second ago'),
+    new DateTime('5000 second ago'),
+    new DateTime('9000 second ago'),
     
     new DateTime('1 minute ago'),
     new DateTime('10 minute ago'),
@@ -52,6 +54,7 @@ $dates = array(
     new DateTime('15 hour ago'),
     new DateTime('20 hour ago'),
     new DateTime('23 hour ago'),
+    new DateTime('46 hour ago'),
     
     new DateTime('1 day ago'),
     new DateTime('5 day ago'),
@@ -70,7 +73,8 @@ $dates = array(
     new DateTime('2 year ago'),
     new DateTime('5 year ago'),
     new DateTime('10 year ago'),
-    new DateTime('25 year ago')
+    new DateTime('25 year ago'),
+    new DateTime('23 month ago'),
     );
 
 $smarty->display('header.tpl');

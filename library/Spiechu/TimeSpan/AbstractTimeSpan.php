@@ -36,7 +36,7 @@ abstract class AbstractTimeSpan {
     /**
      * @var float percentage tolerance to mark almost full unit true
      */
-    protected $_almostFullTolerance = 10.0;
+    protected $_almostFullTolerance = 15.0;
 
     /**
      * Returns proper time unit string according to number of units.
@@ -99,8 +99,8 @@ abstract class AbstractTimeSpan {
         $interval = $this->getInterval();
         $timeUnit = $this->getUnit($interval['counter'], $interval['unit']);
 
-        $prefix = ($interval['almost']) ? $this->getPrefix() . ' ' : '';
-        $half = ($interval['half']) ? $this->getHalf() . ' ' : '';
+        $prefix = ($interval['almost'] || $interval['half'] || $interval['approx']) ? $this->getPrefix() . ' ' : '';
+        $half = ($interval['half'] && $interval['counter'] > 0) ? $this->getHalf() . ' ' : '';
         $suffix = ($this->_showSuffix) ? ' ' . $this->getSuffix() : '';
 
         if ($interval['counter'] > 1) {
@@ -108,7 +108,7 @@ abstract class AbstractTimeSpan {
         } elseif ($interval['counter'] >= 0) {
 
             // in case we don't have to show number of units
-            return $prefix . $timeUnit . $suffix;
+            return $prefix . $timeUnit . ' ' . $half . $suffix;
         } else {
 
             // in case of 'just now' -1 offset we don't need 'ago' suffix
@@ -125,13 +125,17 @@ abstract class AbstractTimeSpan {
     protected function getInterval() {
         $curDate = new \DateTime('now');
         $diff = $curDate->diff($this->_startDate);
+        $approx = false;
 
         // counting years
         if ($diff->y > 0) {
             $unit = 'y';
             $counter = $diff->y;
-            $half = false;
-            $almostFull = false;
+            $half = $this->isHalfUnit($diff->m, 12);
+            $almostFull = $this->almostFullUnit($diff->m, 12);
+            if ($almostFull) {
+                ++$counter;
+            }
 
             // counting months
         } elseif ($diff->m > 0) {
@@ -144,10 +148,15 @@ abstract class AbstractTimeSpan {
                 $half = false;
                 $unit = 'y';
                 $counter = 0;
+                $approx = true;
             } else {
                 $unit = 'm';
                 $counter = $diff->m;
                 $half = $this->isHalfUnit($diff->d, 30);
+                $almostFull = $this->almostFullUnit($diff->d, 30);
+                if ($almostFull) {
+                    ++$counter;
+                }
             }
 
             // counting days
@@ -161,10 +170,15 @@ abstract class AbstractTimeSpan {
                 $half = false;
                 $unit = 'm';
                 $counter = 0;
+                $approx = true;
             } else {
                 $unit = 'd';
                 $counter = $diff->d;
                 $half = $this->isHalfUnit($diff->h, 24);
+                $almostFull = $this->almostFullUnit($diff->h, 24);
+                if ($almostFull) {
+                    ++$counter;
+                }
             }
 
             // counting hours
@@ -178,10 +192,15 @@ abstract class AbstractTimeSpan {
                 $half = false;
                 $unit = 'd';
                 $counter = 0;
+                $approx = true;
             } else {
                 $unit = 'h';
                 $counter = $diff->h;
                 $half = $this->isHalfUnit($diff->i, 60);
+                $almostFull = $this->almostFullUnit($diff->i, 60);
+                if ($almostFull) {
+                    ++$counter;
+                }
             }
 
             // counting minutes
@@ -195,10 +214,15 @@ abstract class AbstractTimeSpan {
                 $half = false;
                 $unit = 'h';
                 $counter = 0;
+                $approx = true;
             } else {
                 $unit = 'i';
-                $half = $this->isHalfUnit($diff->s, 60);
                 $counter = $diff->i;
+                $half = $this->isHalfUnit($diff->s, 60);
+                $almostFull = $this->almostFullUnit($diff->s, 60);
+                if ($almostFull) {
+                    ++$counter;
+                }
             }
 
             // counting seconds
@@ -213,6 +237,7 @@ abstract class AbstractTimeSpan {
                 if ($half) {
                     $unit = 'i';
                     $counter = 0;
+                    $approx = true;
                 } else {
                     $unit = 's';
                     $counter = ($diff->s > $this->_justNow) ? $diff->s : -1;
@@ -223,11 +248,16 @@ abstract class AbstractTimeSpan {
         } else {
             throw new TimeSpanException('Invalid DateInterval');
         }
+        
+        if ($approx === false) {
+            $approx = ($half || $almostFull);
+        }
 
         return array('counter' => $counter,
             'unit' => $unit,
             'half' => $half,
-            'almost' => $almostFull);
+            'almost' => $almostFull,
+            'approx' => $approx);
     }
 
     /**

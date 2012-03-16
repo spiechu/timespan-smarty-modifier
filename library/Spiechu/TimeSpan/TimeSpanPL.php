@@ -15,11 +15,11 @@ class TimeSpanPL extends AbstractTimeSpan {
 
     private $_units = array(
         -1 => array('s' => 'przed chwilą'),
-        0 => array('i' => 'około pół minuty',
-            'h' => 'około pół godziny',
-            'd' => 'około pół dnia',
-            'm' => 'około pół miesiąca',
-            'y' => 'około pół roku'),
+        0 => array('i' => 'pół minuty',
+            'h' => 'pół godziny',
+            'd' => 'pół dnia',
+            'm' => 'pół miesiąca',
+            'y' => 'pół roku'),
         1 => array('s' => 'sekundę',
             'i' => 'minutę',
             'h' => 'godzinę',
@@ -59,7 +59,7 @@ class TimeSpanPL extends AbstractTimeSpan {
     }
 
     protected function getPrefix() {
-        return 'prawie';
+        return 'około';
     }
 
     protected function getHalf() {
