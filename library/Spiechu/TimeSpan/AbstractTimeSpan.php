@@ -134,9 +134,7 @@ abstract class AbstractTimeSpan {
             $counter = $diff->y;
             $half = $this->isHalfUnit($diff->m, 12);
             $almostFull = $this->almostFullUnit($diff->m, 12);
-            if ($almostFull) {
-                ++$counter;
-            }
+            if ($almostFull) ++$counter;
 
             // counting months
         } elseif ($diff->m > 0) {
@@ -155,9 +153,7 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->m;
                 $half = $this->isHalfUnit($diff->d, 30);
                 $almostFull = $this->almostFullUnit($diff->d, 30);
-                if ($almostFull) {
-                    ++$counter;
-                }
+                if ($almostFull) ++$counter;
             }
 
             // counting days
@@ -177,9 +173,7 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->d;
                 $half = $this->isHalfUnit($diff->h, 24);
                 $almostFull = $this->almostFullUnit($diff->h, 24);
-                if ($almostFull) {
-                    ++$counter;
-                }
+                if ($almostFull) ++$counter;
             }
 
             // counting hours
@@ -199,9 +193,7 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->h;
                 $half = $this->isHalfUnit($diff->i, 60);
                 $almostFull = $this->almostFullUnit($diff->i, 60);
-                if ($almostFull) {
-                    ++$counter;
-                }
+                if ($almostFull) ++$counter;
             }
 
             // counting minutes
@@ -221,9 +213,7 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->i;
                 $half = $this->isHalfUnit($diff->s, 60);
                 $almostFull = $this->almostFullUnit($diff->s, 60);
-                if ($almostFull) {
-                    ++$counter;
-                }
+                if ($almostFull) ++$counter;
             }
 
             // counting seconds
