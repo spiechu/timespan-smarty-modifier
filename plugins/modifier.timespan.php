@@ -26,6 +26,8 @@ function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) 
             $timeSpan = new Spiechu\TimeSpan\TimeSpanEN();
         }
     } else {
+        
+        // if unknown language or class doesn't extend AbstractTimeSpan, fall back to english
         $timeSpan = new Spiechu\TimeSpan\TimeSpanEN();
     }
 
