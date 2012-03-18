@@ -258,8 +258,8 @@ abstract class AbstractTimeSpan {
      * @return bool 
      */
     protected function isHalfUnit($actualUnit, $fullUnit) {
-        $halfUnit = floatval($fullUnit) / 2;
-        $percentageUnit = ceil($halfUnit * ($this->_halfTolerance / 100.0));
+        $halfUnit = floatval($fullUnit) / 2.0;
+        $percentageUnit = ceil($halfUnit * (($this->_halfTolerance / 2.0) / 100.0));
         return ($actualUnit <= ($halfUnit + $percentageUnit) && $actualUnit >= ($halfUnit - $percentageUnit)) ? true : false;
     }
 
