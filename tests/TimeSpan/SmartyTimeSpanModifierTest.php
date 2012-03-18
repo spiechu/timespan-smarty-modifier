@@ -66,9 +66,38 @@ class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
 
     public function testMalformedDate() {
         $this->setExpectedException('Spiechu\TimeSpan\TimeSpanException');
-        $this->_smarty->assign('lang', 'en');
         $this->_smarty->assign('date', 'malformed date');
+        $this->_smarty->fetch('WithoutArgs.tpl');
+    }
+
+    /**
+     * @dataProvider secondsDatesProvider
+     */
+    public function testExactSecondsEN($date, $expectedOutput) {
+        $this->_smarty->assign('date', $date);
         $output = $this->_smarty->fetch('WithoutArgs.tpl');
+        $this->assertEquals($output, $expectedOutput . ' seconds ago');
+    }
+
+    /**
+     * @dataProvider secondsDatesProvider
+     */
+    public function testExactSecondsPL($date, $expectedOutput) {
+        $this->_smarty->assign('date', $date);
+        $this->_smarty->assign('lang', 'pl');
+        $output = $this->_smarty->fetch('WithLangAttr.tpl');
+        $this->assertEquals($output, $expectedOutput . ' sekund temu');
+    }
+
+    public function secondsDatesProvider() {
+        return array(array(new \DateTime('11 second ago'), 11),
+            array(new \DateTime('15 second ago'), 15),
+            array(new \DateTime('20 second ago'), 20),
+            array(new \DateTime('25 second ago'), 25),
+            array(time() - 11, 11),
+            array(time() - 15, 15),
+            array(time() - 20, 20),
+            array(time() - 25, 25));
     }
 
 }
