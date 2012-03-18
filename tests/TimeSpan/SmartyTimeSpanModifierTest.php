@@ -57,4 +57,18 @@ class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
             array(time() - 10));
     }
 
+    public function testAutoSwitchToEN() {
+        $this->_smarty->assign('lang', 'pln');
+        $this->_smarty->assign('date', time());
+        $output = $this->_smarty->fetch('WithLangAttr.tpl');
+        $this->assertEquals($output, 'just now');
+    }
+
+    public function testMalformedDate() {
+        $this->setExpectedException('Spiechu\TimeSpan\TimeSpanException');
+        $this->_smarty->assign('lang', 'en');
+        $this->_smarty->assign('date', 'malformed date');
+        $output = $this->_smarty->fetch('WithoutArgs.tpl');
+    }
+
 }

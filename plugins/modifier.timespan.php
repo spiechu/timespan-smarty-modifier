@@ -18,7 +18,7 @@
  */
 function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) {
     $className = 'Spiechu\TimeSpan\TimeSpan' . strtoupper($lang);
-    if (class_exists($className)) {
+    if (class_exists($className)) {       
         $timeSpan = new $className();
         
         // double check if class extends abstract TimeSpan class
