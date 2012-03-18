@@ -43,12 +43,18 @@ class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function justNowDatesProvider() {
-        return array(array(new \DateTime('1 second ago')),
+        return array(array(new \DateTime('now')),
+            array(new \DateTime('1 second ago')),
             array(new \DateTime('2 second ago')),
             array(new \DateTime('5 second ago')),
             array(new \DateTime('8 second ago')),
-            array(new \DateTime('10 second ago')));
+            array(new \DateTime('10 second ago')),
+            array(time()),
+            array(time() - 1),
+            array(time() - 2),
+            array(time() - 5),
+            array(time() - 8),
+            array(time() - 10));
     }
 
 }
-

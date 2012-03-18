@@ -217,7 +217,7 @@ abstract class AbstractTimeSpan {
             }
 
             // counting seconds
-        } elseif ($diff->s > 0) {
+        } elseif ($diff->s >= 0) {
             $almostFull = $this->almostFullUnit($diff->s, 60);
             if ($almostFull) {
                 $half = false;
@@ -235,7 +235,7 @@ abstract class AbstractTimeSpan {
                 }
             }
 
-            // in case of bad interval (less than 1 second)
+            // in case of bad interval
         } else {
             throw new TimeSpanException('Invalid DateInterval');
         }
