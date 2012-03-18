@@ -16,25 +16,25 @@
  * @author Matthew Weier O'Phinney <matthew@zend.com>
  * @author Kris Wallsmith <kris.wallsmith@gmail.com>
  * @author Fabien Potencier <fabien.potencier@symfony-project.org>
+ * @author Lissachenko Alexander <lisachenko.it@gmail.com>
  */
-class SplClassLoader
-{
+class SplClassLoader {
 
     private $_fileExtension = '.php';
     private $_namespace;
-    private $_includePath;
+    private $_includePaths;
     private $_namespaceSeparator = '\\';
 
     /**
      * Creates a new <tt>SplClassLoader</tt> that loads classes of the
      * specified namespace.
-     * 
-     * @param string $ns The namespace to use.
+     *
+     * @param string              $ns The namespace to use.
+     * @param string|null|array   $includePath One or more include paths to use
      */
-    public function __construct($ns = null , $includePath = null)
-    {
+    public function __construct($ns = null, $includePath = null) {
         $this->_namespace = $ns;
-        $this->_includePath = $includePath;
+        $this->_includePaths = (array) $includePath;
     }
 
     /**
@@ -42,39 +42,35 @@ class SplClassLoader
      * 
      * @param string $sep The separator to use.
      */
-    public function setNamespaceSeparator($sep)
-    {
+    public function setNamespaceSeparator($sep) {
         $this->_namespaceSeparator = $sep;
     }
 
     /**
      * Gets the namespace seperator used by classes in the namespace of this class loader.
      *
-     * @return void
+     * @return string
      */
-    public function getNamespaceSeparator()
-    {
+    public function getNamespaceSeparator() {
         return $this->_namespaceSeparator;
     }
 
     /**
      * Sets the base include path for all class files in the namespace of this class loader.
      * 
-     * @param string $includePath
+     * @param string|array $includePath One or more include paths
      */
-    public function setIncludePath($includePath)
-    {
-        $this->_includePath = $includePath;
+    public function setIncludePath($includePath) {
+        $this->_includePaths = (array) $includePath;
     }
 
     /**
      * Gets the base include path for all class files in the namespace of this class loader.
      *
-     * @return string $includePath
+     * @return string|array
      */
-    public function getIncludePath()
-    {
-        return $this->_includePath;
+    public function getIncludePath() {
+        return count($this->_includePaths) > 1 ? $this->_includePaths : reset($this->_includePaths);
     }
 
     /**
@@ -82,8 +78,7 @@ class SplClassLoader
      * 
      * @param string $fileExtension
      */
-    public function setFileExtension($fileExtension)
-    {
+    public function setFileExtension($fileExtension) {
         $this->_fileExtension = $fileExtension;
     }
 
@@ -92,49 +87,77 @@ class SplClassLoader
      *
      * @return string $fileExtension
      */
-    public function getFileExtension()
-    {
+    public function getFileExtension() {
         return $this->_fileExtension;
     }
 
     /**
      * Installs this class loader on the SPL autoload stack.
+     * 
+     * @return bool
      */
-    public function register()
-    {
-        spl_autoload_register(array($this , 'loadClass'));
+    public function register() {
+        return spl_autoload_register(array($this, 'loadClass'));
     }
 
     /**
      * Uninstalls this class loader from the SPL autoloader stack.
+     *
+     * @return bool
      */
-    public function unregister()
-    {
-        spl_autoload_unregister(array($this , 'loadClass'));
+    public function unregister() {
+        return spl_autoload_unregister(array($this, 'loadClass'));
     }
 
     /**
      * Loads the given class or interface.
      *
      * @param string $className The name of the class to load.
-     * @return void
+     *
+     * @return bool Success status
      */
-    public function loadClass($className)
-    {
-        if (null === $this->_namespace || $this->_namespace . $this->_namespaceSeparator === substr($className , 0 , strlen($this->_namespace . $this->_namespaceSeparator)))
-        {
+    public function loadClass($className) {
+        $isFound = false;
+
+        if (null === $this->_namespace || $this->_namespace . $this->_namespaceSeparator === substr($className, 0, strlen($this->_namespace . $this->_namespaceSeparator))) {
             $fileName = '';
             $namespace = '';
-            if (false !== ($lastNsPos = strripos($className , $this->_namespaceSeparator)))
-            {
-                $namespace = substr($className , 0 , $lastNsPos);
-                $className = substr($className , $lastNsPos + 1);
-                $fileName = str_replace($this->_namespaceSeparator , DIRECTORY_SEPARATOR , $namespace) . DIRECTORY_SEPARATOR;
+            if (false !== ($lastNsPos = strripos($className, $this->_namespaceSeparator))) {
+                $namespace = substr($className, 0, $lastNsPos);
+                $className = substr($className, $lastNsPos + 1);
+                $fileName = str_replace($this->_namespaceSeparator, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
             }
-            $fileName .= str_replace('_' , DIRECTORY_SEPARATOR , $className) . $this->_fileExtension;
+            $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . $this->_fileExtension;
 
-            require ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
+            $includePaths = $this->_includePaths ? : array('.');
+            foreach ($includePaths as $includePath) {
+                $unresolvedFilePath = $includePath . DIRECTORY_SEPARATOR . $fileName;
+                $isFound = $this->tryLoadClassByPath($className, $unresolvedFilePath);
+                if ($isFound) {
+                    break;
+                }
+            }
         }
+
+        return $isFound;
+    }
+
+    /**
+     * Tries to load class by path
+     *
+     * @param string $className Name of the class to load
+     * @param string $unresolvedFilePath Absolute or relative path to the file
+     *
+     * @return bool Success status
+     */
+    private function tryLoadClassByPath($className, $unresolvedFilePath) {
+        $filePath = stream_resolve_include_path($unresolvedFilePath);
+        $isFound = false !== $filePath;
+        if ($isFound) {
+            require $filePath;
+            $isFound = class_exists($className, false);
+        }
+        return $isFound;
     }
 
 }
