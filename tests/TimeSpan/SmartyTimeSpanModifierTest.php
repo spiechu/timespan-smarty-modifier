@@ -11,7 +11,7 @@
 
 namespace Spiechu\Tests\TimeSpan;
 
-class SmartyTimeSpanModifier extends \PHPUnit_Framework_TestCase {
+class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
 
     protected $_smarty;
 
@@ -26,18 +26,28 @@ class SmartyTimeSpanModifier extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider justNowDatesProvider
      */
-    public function testJustNow($date, $expectedOutput) {
+    public function testJustNowEN($date) {
         $this->_smarty->assign('date', $date);
         $output = $this->_smarty->fetch('WithoutArgs.tpl');
-        $this->assertEquals($output, $expectedOutput);
+        $this->assertEquals($output, 'just now');
+    }
+
+    /**
+     * @dataProvider justNowDatesProvider
+     */
+    public function testJustNowPL($date) {
+        $this->_smarty->assign('date', $date);
+        $this->_smarty->assign('lang', 'pl');
+        $output = $this->_smarty->fetch('WithLangAttr.tpl');
+        $this->assertEquals($output, 'przed chwilą');
     }
 
     public function justNowDatesProvider() {
-        return array(array(new \DateTime('1 second ago'), 'just now'),
-            array(new \DateTime('2 second ago'), 'just now'),
-            array(new \DateTime('5 second ago'), 'just now'),
-            array(new \DateTime('8 second ago'), 'just now'),
-            array(new \DateTime('10 second ago'), 'just now'));
+        return array(array(new \DateTime('1 second ago')),
+            array(new \DateTime('2 second ago')),
+            array(new \DateTime('5 second ago')),
+            array(new \DateTime('8 second ago')),
+            array(new \DateTime('10 second ago')));
     }
 
 }
