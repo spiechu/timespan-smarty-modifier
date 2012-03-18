@@ -57,7 +57,7 @@ class TimeSpanPL extends AbstractTimeSpan {
             } else {
 
                 // we've got only one last digit now
-                return $this->getUnit($howMany, $unitSymbol);
+                return $this->getUnit($howMany, $unitSymbol, $half);
             }
         } elseif ($howMany >= 5) {
             $howMany = 5;
