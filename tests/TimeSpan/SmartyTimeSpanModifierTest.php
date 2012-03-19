@@ -11,13 +11,19 @@
 
 namespace Spiechu\Tests\TimeSpan;
 
-class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
+use \DateTime,
+    \PHPUnit_Framework_TestCase,
+    \Smarty,
+    Spiechu\TimeSpan\TimeSpanException;
+    
+
+class SmartyTimeSpanModifierTest extends PHPUnit_Framework_TestCase {
 
     protected $_smarty;
 
     protected function setUp() {
         require_once __DIR__ . '/../../Smarty/libs/Smarty.class.php';
-        $this->_smarty = new \Smarty();
+        $this->_smarty = new Smarty();
         $this->_smarty->setTemplateDir(__DIR__ . '/TestTemplates');
         $this->_smarty->setCompileDir(__DIR__ . '/../../temp_c');
         $this->_smarty->addPluginsDir(__DIR__ . '/../../plugins');
@@ -43,12 +49,12 @@ class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function justNowDatesProvider() {
-        return array(array(new \DateTime('now')),
-            array(new \DateTime('1 second ago')),
-            array(new \DateTime('2 second ago')),
-            array(new \DateTime('5 second ago')),
-            array(new \DateTime('8 second ago')),
-            array(new \DateTime('10 second ago')),
+        return array(array(new DateTime('now')),
+            array(new DateTime('1 second ago')),
+            array(new DateTime('2 second ago')),
+            array(new DateTime('5 second ago')),
+            array(new DateTime('8 second ago')),
+            array(new DateTime('10 second ago')),
             array(time()),
             array(time() - 1),
             array(time() - 2),
@@ -65,7 +71,7 @@ class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testMalformedDate() {
-        $this->setExpectedException('Spiechu\TimeSpan\TimeSpanException');
+        $this->setExpectedException('TimeSpanException');
         $this->_smarty->assign('date', 'malformed date');
         $this->_smarty->fetch('WithoutArgs.tpl');
     }
@@ -90,10 +96,10 @@ class SmartyTimeSpanModifierTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function secondsDatesProvider() {
-        return array(array(new \DateTime('11 second ago'), 11),
-            array(new \DateTime('15 second ago'), 15),
-            array(new \DateTime('20 second ago'), 20),
-            array(new \DateTime('25 second ago'), 25),
+        return array(array(new DateTime('11 second ago'), 11),
+            array(new DateTime('15 second ago'), 15),
+            array(new DateTime('20 second ago'), 20),
+            array(new DateTime('25 second ago'), 25),
             array(time() - 11, 11),
             array(time() - 15, 15),
             array(time() - 20, 20),
