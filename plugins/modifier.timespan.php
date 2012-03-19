@@ -12,7 +12,7 @@
 use \DateTime,
     Spiechu\TimeSpan\AbstractTimeSpan,
     Spiechu\TimeSpan\TimeSpanEN,
-    Spiechu\TimeSpan\TimeSpanException
+    Spiechu\TimeSpan\TimeSpanException;
     
 
 /**
