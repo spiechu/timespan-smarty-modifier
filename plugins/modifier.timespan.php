@@ -9,6 +9,12 @@
 * file that was distributed with this source code.
 */
 
+use \DateTime,
+    Spiechu\TimeSpan\AbstractTimeSpan,
+    Spiechu\TimeSpan\TimeSpanEN,
+    Spiechu\TimeSpan\TimeSpanException
+    
+
 /**
  * @param \DateTime|int $startDateTime \DateTime or timestamp to compute date interval
  * @param string $lang language of message; if can't find proper language - falls back on english
@@ -22,24 +28,24 @@ function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) 
         $timeSpan = new $className();
         
         // double check if class extends abstract TimeSpan class
-        if (!($timeSpan instanceof Spiechu\TimeSpan\AbstractTimeSpan)) {
-            $timeSpan = new Spiechu\TimeSpan\TimeSpanEN();
+        if (!($timeSpan instanceof AbstractTimeSpan)) {
+            $timeSpan = new TimeSpanEN();
         }
     } else {
         
         // if unknown language or class doesn't extend AbstractTimeSpan, fall back to english
-        $timeSpan = new Spiechu\TimeSpan\TimeSpanEN();
+        $timeSpan = new TimeSpanEN();
     }
 
-    if ($startDateTime instanceof \DateTime) {
+    if ($startDateTime instanceof DateTime) {
         $date = $startDateTime;
         
     // if it's int, assume it's timestamp
     } elseif (is_int($startDateTime)) {
-        $date = new \DateTime();
+        $date = new DateTime();
         $date->setTimestamp($startDateTime);
     } else {
-        throw new Spiechu\TimeSpan\TimeSpanException('Unknown startDateTime: ' . $startDateTime);
+        throw new TimeSpanException('Unknown startDateTime: ' . $startDateTime);
     }
 
     $timeSpan->setStartDate($date)->showSuffix($suffix);
