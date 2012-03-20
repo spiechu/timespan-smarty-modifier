@@ -12,6 +12,7 @@
 namespace Spiechu\TimeSpan;
 
 use \DateTime,
+    \DateInterval,
     Spiechu\TimeSpan\TimeSpanException;
 
 abstract class AbstractTimeSpan {
@@ -127,136 +128,228 @@ abstract class AbstractTimeSpan {
      * @throws Spiechu\TimeSpan\TimeSpanException
      */
     protected function getInterval() {
-        $curDate = new DateTime('now');
-        $diff = $curDate->diff($this->_startDate);
-        $approx = false;
+        $currentDate = new DateTime('now');
+        $dateInterval = $currentDate->diff($this->_startDate);
 
-        // counting years
-        if ($diff->y > 0) {
-            $unit = 'y';
-            $counter = $diff->y;
-            $half = $this->isHalfUnit($diff->m, 12);
-            $almostFull = $this->almostFullUnit($diff->m, 12);
-            if ($almostFull)
-                ++$counter;
+        $interval = $this->countYears($dateInterval);
+        if (count($interval) > 0)
+            return $interval;
 
-            // counting months
-        } elseif ($diff->m > 0) {
-            $almostFull = $this->almostFullUnit($diff->m, 12);
-            if ($almostFull) {
-                $half = false;
-                $unit = 'y';
-                $counter = 1;
-            } elseif ($this->isHalfUnit($diff->m, 12)) {
-                $half = false;
-                $unit = 'y';
-                $counter = 0;
-                $approx = true;
-            } else {
-                $unit = 'm';
-                $counter = $diff->m;
-                $half = $this->isHalfUnit($diff->d, 30);
-                $almostFull = $this->almostFullUnit($diff->d, 30);
-                if ($almostFull)
-                    ++$counter;
+        $interval = $this->countMonths($dateInterval);
+        if (count($interval) > 0)
+            return $interval;
+
+        $interval = $this->countDays($dateInterval);
+        if (count($interval) > 0)
+            return $interval;
+
+        $interval = $this->countHours($dateInterval);
+        if (count($interval) > 0)
+            return $interval;
+
+        $interval = $this->countMinutes($dateInterval);
+        if (count($interval) > 0)
+            return $interval;
+
+        $interval = $this->countSeconds($dateInterval);
+        if (count($interval) > 0)
+            return $interval;
+
+        throw new TimeSpanException('Invalid DateInterval');
+    }
+
+    protected function countYears(DateInterval $di) {
+        if ($di->y > 0) {
+            $array['counter'] = $di->y;
+            $array['unit'] = 'y';
+            $array['half'] = $this->isHalfUnit($di->m, 12);
+            $array['almost'] = $this->almostFullUnit($di->m, 12);
+            if ($array['almost']) {
+                ++$array['counter'];
             }
-
-            // counting days
-        } elseif ($diff->d > 0) {
-            $almostFull = $this->almostFullUnit($diff->d, 30);
-            if ($almostFull) {
-                $half = false;
-                $unit = 'm';
-                $counter = 1;
-            } elseif ($this->isHalfUnit($diff->d, 30)) {
-                $half = false;
-                $unit = 'm';
-                $counter = 0;
-                $approx = true;
-            } else {
-                $unit = 'd';
-                $counter = $diff->d;
-                $half = $this->isHalfUnit($diff->h, 24);
-                $almostFull = $this->almostFullUnit($diff->h, 24);
-                if ($almostFull)
-                    ++$counter;
-            }
-
-            // counting hours
-        } elseif ($diff->h > 0) {
-            $almostFull = $this->almostFullUnit($diff->h, 24);
-            if ($almostFull) {
-                $half = false;
-                $unit = 'd';
-                $counter = 1;
-            } elseif ($this->isHalfUnit($diff->h, 24)) {
-                $half = false;
-                $unit = 'd';
-                $counter = 0;
-                $approx = true;
-            } else {
-                $unit = 'h';
-                $counter = $diff->h;
-                $half = $this->isHalfUnit($diff->i, 60);
-                $almostFull = $this->almostFullUnit($diff->i, 60);
-                if ($almostFull)
-                    ++$counter;
-            }
-
-            // counting minutes
-        } elseif ($diff->i > 0) {
-            $almostFull = $this->almostFullUnit($diff->i, 60);
-            if ($almostFull) {
-                $half = false;
-                $unit = 'h';
-                $counter = 1;
-            } elseif ($this->isHalfUnit($diff->i, 60)) {
-                $half = false;
-                $unit = 'h';
-                $counter = 0;
-                $approx = true;
-            } else {
-                $unit = 'i';
-                $counter = $diff->i;
-                $half = $this->isHalfUnit($diff->s, 60);
-                $almostFull = $this->almostFullUnit($diff->s, 60);
-                if ($almostFull)
-                    ++$counter;
-            }
-
-            // counting seconds
-        } elseif ($diff->s >= 0) {
-            $almostFull = $this->almostFullUnit($diff->s, 60);
-            if ($almostFull) {
-                $half = false;
-                $unit = 'i';
-                $counter = 1;
-            } else {
-                $half = $this->isHalfUnit($diff->s, 60);
-                if ($half) {
-                    $unit = 'i';
-                    $counter = 0;
-                    $approx = true;
-                } else {
-                    $unit = 's';
-                    $counter = ($diff->s > $this->_justNow) ? $diff->s : -1;
-                }
-            }
-
-            // in case of bad interval
-        } else {
-            throw new TimeSpanException('Invalid DateInterval');
+            $array['approx'] = ($array['half'] || $array['almost']);
+            return $array;
         }
+        return array();
+    }
 
-        if ($approx === false) {
-            $approx = ($half || $almostFull);
+    protected function countMonths(DateInterval $di) {
+        if ($di->m > 0) {
+            $array['almost'] = $this->almostFullUnit($di->m, 12);
+
+            // is it almost a year?
+            if ($array['almost']) {
+                $array['counter'] = 1;
+                $array['half'] = false;
+                $array['unit'] = 'y';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            // is it a half year?
+            if ($this->isHalfUnit($di->m, 12)) {
+                $array['counter'] = 0;
+                $array['half'] = false;
+                $array['unit'] = 'y';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            $array['counter'] = $di->m;
+            $array['half'] = $this->isHalfUnit($di->d, 30);
+            $array['unit'] = 'm';
+
+            // is it almost a month?
+            $array['almost'] = $this->almostFullUnit($di->d, 30);
+            if ($array['almost']) {
+                ++$array['counter'];
+            }
+            $array['approx'] = ($array['half'] || $array['almost']);
+            return $array;
         }
+        return array();
+    }
 
-        return array('counter' => $counter,
-            'unit' => $unit,
-            'half' => $half,
-            'almost' => $almostFull,
-            'approx' => $approx);
+    protected function countDays(DateInterval $di) {
+        if ($di->d > 0) {
+            $array['almost'] = $this->almostFullUnit($di->d, 30);
+
+            // is it almost a month?
+            if ($array['almost']) {
+                $array['counter'] = 1;
+                $array['half'] = false;
+                $array['unit'] = 'm';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            // is it a half month?
+            if ($this->isHalfUnit($di->d, 30)) {
+                $array['counter'] = 0;
+                $array['half'] = false;
+                $array['unit'] = 'm';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            $array['counter'] = $di->d;
+            $array['half'] = $this->isHalfUnit($di->h, 24);
+            $array['unit'] = 'd';
+
+            // is it almost a day?
+            $array['almost'] = $this->almostFullUnit($di->h, 24);
+            if ($array['almost']) {
+                ++$array['counter'];
+            }
+            $array['approx'] = ($array['half'] || $array['almost']);
+            return $array;
+        }
+        return array();
+    }
+
+    protected function countHours(DateInterval $di) {
+        if ($di->h > 0) {
+            $array['almost'] = $this->almostFullUnit($di->h, 24);
+
+            // is it almost a day?
+            if ($array['almost']) {
+                $array['counter'] = 1;
+                $array['half'] = false;
+                $array['unit'] = 'd';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            // is it a half of a day?
+            if ($this->isHalfUnit($di->h, 24)) {
+                $array['counter'] = 0;
+                $array['half'] = false;
+                $array['unit'] = 'd';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            $array['counter'] = $di->h;
+            $array['half'] = $this->isHalfUnit($di->i, 60);
+            $array['unit'] = 'h';
+
+            // is it almost a hour?
+            $array['almost'] = $this->almostFullUnit($di->i, 60);
+            if ($array['almost']) {
+                ++$array['counter'];
+            }
+            $array['approx'] = ($array['half'] || $array['almost']);
+            return $array;
+        }
+        return array();
+    }
+
+    protected function countMinutes(DateInterval $di) {
+        if ($di->i > 0) {
+            $array['almost'] = $this->almostFullUnit($di->i, 60);
+
+            // is it almost an hour?
+            if ($array['almost']) {
+                $array['counter'] = 1;
+                $array['half'] = false;
+                $array['unit'] = 'h';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            // is it a half of an hour?
+            if ($this->isHalfUnit($di->i, 60)) {
+                $array['counter'] = 0;
+                $array['half'] = false;
+                $array['unit'] = 'h';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            $array['counter'] = $di->i;
+            $array['half'] = $this->isHalfUnit($di->s, 60);
+            $array['unit'] = 'i';
+
+            // is it almost a hour?
+            $array['almost'] = $this->almostFullUnit($di->s, 60);
+            if ($array['almost']) {
+                ++$array['counter'];
+            }
+            $array['approx'] = ($array['half'] || $array['almost']);
+            return $array;
+        }
+        return array();
+    }
+
+    protected function countSeconds(DateInterval $di) {
+        if ($di->s >= 0) {
+            $array['almost'] = $this->almostFullUnit($di->s, 60);
+
+            // is it almost a minute?
+            if ($array['almost']) {
+                $array['counter'] = 1;
+                $array['half'] = false;
+                $array['unit'] = 'i';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            // is it a half of a minute?
+            if ($this->isHalfUnit($di->s, 60)) {
+                $array['counter'] = 0;
+                $array['half'] = true;
+                $array['unit'] = 'i';
+                $array['approx'] = true;
+                return $array;
+            }
+
+            $array['counter'] = ($di->s > $this->_justNow) ? $di->s : -1;
+            $array['half'] = false;
+            $array['unit'] = 's';
+            $array['approx'] = false;
+            return $array;
+        }
+        return array();
     }
 
     /**
