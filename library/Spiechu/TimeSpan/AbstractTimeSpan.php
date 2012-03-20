@@ -11,6 +11,9 @@
 
 namespace Spiechu\TimeSpan;
 
+use \DateTime,
+    Spiechu\TimeSpan\TimeSpanException;
+
 abstract class AbstractTimeSpan {
 
     /**
@@ -86,7 +89,7 @@ abstract class AbstractTimeSpan {
      * @param \DateTime $startDate
      * @return AbstractTimeSpan fluent interface
      */
-    public function setStartDate(\DateTime $startDate) {
+    public function setStartDate(DateTime $startDate) {
         $this->_startDate = $startDate;
         return $this;
     }
@@ -124,7 +127,7 @@ abstract class AbstractTimeSpan {
      * @throws Spiechu\TimeSpan\TimeSpanException
      */
     protected function getInterval() {
-        $curDate = new \DateTime('now');
+        $curDate = new DateTime('now');
         $diff = $curDate->diff($this->_startDate);
         $approx = false;
 
@@ -134,7 +137,8 @@ abstract class AbstractTimeSpan {
             $counter = $diff->y;
             $half = $this->isHalfUnit($diff->m, 12);
             $almostFull = $this->almostFullUnit($diff->m, 12);
-            if ($almostFull) ++$counter;
+            if ($almostFull)
+                ++$counter;
 
             // counting months
         } elseif ($diff->m > 0) {
@@ -153,7 +157,8 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->m;
                 $half = $this->isHalfUnit($diff->d, 30);
                 $almostFull = $this->almostFullUnit($diff->d, 30);
-                if ($almostFull) ++$counter;
+                if ($almostFull)
+                    ++$counter;
             }
 
             // counting days
@@ -173,7 +178,8 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->d;
                 $half = $this->isHalfUnit($diff->h, 24);
                 $almostFull = $this->almostFullUnit($diff->h, 24);
-                if ($almostFull) ++$counter;
+                if ($almostFull)
+                    ++$counter;
             }
 
             // counting hours
@@ -193,7 +199,8 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->h;
                 $half = $this->isHalfUnit($diff->i, 60);
                 $almostFull = $this->almostFullUnit($diff->i, 60);
-                if ($almostFull) ++$counter;
+                if ($almostFull)
+                    ++$counter;
             }
 
             // counting minutes
@@ -213,7 +220,8 @@ abstract class AbstractTimeSpan {
                 $counter = $diff->i;
                 $half = $this->isHalfUnit($diff->s, 60);
                 $almostFull = $this->almostFullUnit($diff->s, 60);
-                if ($almostFull) ++$counter;
+                if ($almostFull)
+                    ++$counter;
             }
 
             // counting seconds
@@ -239,7 +247,7 @@ abstract class AbstractTimeSpan {
         } else {
             throw new TimeSpanException('Invalid DateInterval');
         }
-        
+
         if ($approx === false) {
             $approx = ($half || $almostFull);
         }

@@ -15,7 +15,6 @@ use \DateTime,
     \PHPUnit_Framework_TestCase,
     \Smarty,
     Spiechu\TimeSpan\TimeSpanException;
-    
 
 class SmartyTimeSpanModifierTest extends PHPUnit_Framework_TestCase {
 

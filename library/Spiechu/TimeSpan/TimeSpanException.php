@@ -11,6 +11,8 @@
 
 namespace Spiechu\TimeSpan;
 
-class TimeSpanException extends \Exception {
+use \Exception;
+
+class TimeSpanException extends Exception {
     
 }
