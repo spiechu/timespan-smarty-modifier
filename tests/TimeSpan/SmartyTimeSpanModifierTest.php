@@ -70,8 +70,11 @@ class SmartyTimeSpanModifierTest extends PHPUnit_Framework_TestCase {
         $this->assertEquals($output, 'just now');
     }
 
+    /**
+     * @expectedException Spiechu\TimeSpan\TimeSpanException
+     * @expectedExceptionMessage Unknown startDateTime: malformed date
+     */
     public function testMalformedDate() {
-        $this->setExpectedException('TimeSpanException');
         $this->_smarty->assign('date', 'malformed date');
         $this->_smarty->fetch('WithoutArgs.tpl');
     }
