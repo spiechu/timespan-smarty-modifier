@@ -13,6 +13,7 @@ namespace Spiechu\TimeSpan;
 
 use \DateTime,
     \DateInterval,
+    \array_push,
     Spiechu\TimeSpan\TimeSpanException;
 
 abstract class AbstractTimeSpan {
@@ -101,7 +102,17 @@ abstract class AbstractTimeSpan {
      * @return string
      */
     public function getTimeSpan() {
-        $interval = $this->getInterval();
+        $interval = array();
+        foreach ($this->getInterval() as $i) {
+            if (count($i) > 0) {
+                $interval = $i;
+                break;
+            }
+        }
+
+        if (count($interval) == 0)
+            throw new TimeSpanException('Unknown interval');
+
         $timeUnit = $this->getUnit($interval['counter'], $interval['unit'], $interval['half']);
 
         $prefix = ($interval['approx']) ? $this->getPrefix() . ' ' : '';
@@ -125,37 +136,15 @@ abstract class AbstractTimeSpan {
      * Returns unit type and unit count array.
      * 
      * @return array 
-     * @throws Spiechu\TimeSpan\TimeSpanException
      */
     protected function getInterval() {
         $currentDate = new DateTime('now');
         $dateInterval = $currentDate->diff($this->_startDate);
 
-        $interval = $this->countYears($dateInterval);
-        if (count($interval) > 0)
-            return $interval;
+        $interval = array();
+        array_push($interval, $this->countYears($dateInterval), $this->countMonths($dateInterval), $this->countDays($dateInterval), $this->countHours($dateInterval), $this->countMinutes($dateInterval), $this->countSeconds($dateInterval));
 
-        $interval = $this->countMonths($dateInterval);
-        if (count($interval) > 0)
-            return $interval;
-
-        $interval = $this->countDays($dateInterval);
-        if (count($interval) > 0)
-            return $interval;
-
-        $interval = $this->countHours($dateInterval);
-        if (count($interval) > 0)
-            return $interval;
-
-        $interval = $this->countMinutes($dateInterval);
-        if (count($interval) > 0)
-            return $interval;
-
-        $interval = $this->countSeconds($dateInterval);
-        if (count($interval) > 0)
-            return $interval;
-
-        throw new TimeSpanException('Invalid DateInterval');
+        return $interval;
     }
 
     protected function countYears(DateInterval $di) {
