@@ -100,28 +100,37 @@ abstract class AbstractTimeSpan {
      * Returns translated string.
      * 
      * @return string
+     * @throws Spiechu\TimeSpan\TimeSpanException
      */
     public function getTimeSpan() {
-        $interval = array();
+        $interval1 = null;
+        $interval2 = null;
         foreach ($this->getInterval() as $i) {
             if (count($i) > 0) {
-                $interval = $i;
-                break;
+                if ($interval1 === null) {
+                    $interval1 = $i;
+                    continue;
+                }
+                if ($interval2 === null) {
+                    $interval2 = $i;
+                    continue;
+                }
             }
         }
 
-        if (count($interval) == 0)
+        if ($interval1 === null) {
             throw new TimeSpanException('Unknown interval');
+        }
 
-        $timeUnit = $this->getUnit($interval['counter'], $interval['unit'], $interval['half']);
+        $timeUnit = $this->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
 
-        $prefix = ($interval['approx']) ? $this->getPrefix() . ' ' : '';
-        $half = ($interval['half'] && $interval['counter'] > 0) ? $this->getHalf() . ' ' : '';
+        $prefix = ($interval1['approx']) ? $this->getPrefix() . ' ' : '';
+        $half = ($interval1['half'] && $interval1['counter'] > 0) ? $this->getHalf() . ' ' : '';
         $suffix = ($this->_showSuffix) ? ' ' . $this->getSuffix() : '';
 
-        if ($interval['counter'] > 1) {
-            return $prefix . $interval['counter'] . ' ' . $half . $timeUnit . $suffix;
-        } elseif ($interval['counter'] >= 0) {
+        if ($interval1['counter'] > 1) {
+            return $prefix . $interval1['counter'] . ' ' . $half . $timeUnit . $suffix;
+        } elseif ($interval1['counter'] >= 0) {
 
             // in case we don't have to show number of units
             return $prefix . $timeUnit . ' ' . $half . $suffix;
