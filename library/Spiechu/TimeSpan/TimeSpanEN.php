@@ -46,6 +46,10 @@ class TimeSpanEN extends AbstractTimeSpan {
     protected function getHalf() {
         return 'and half';
     }
+    
+    protected function getConjunctionWord() {
+        return 'and';
+    }
 
     protected function getSuffix() {
         return 'ago';

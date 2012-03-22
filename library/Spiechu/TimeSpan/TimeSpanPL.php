@@ -17,13 +17,13 @@ class TimeSpanPL extends AbstractTimeSpan {
         -1 => array('s' => 'przed chwilą'),
         0 => array('i' => 'pół minuty',
             'h' => 'pół godziny',
-            'd' => 'pół dnia',
+            'd' => 'pół doby',
             'm' => 'pół miesiąca',
             'y' => 'pół roku'),
         1 => array('s' => 'sekundę',
             'i' => 'minutę',
             'h' => 'godzinę',
-            'd' => 'dzień',
+            'd' => 'dobę',
             'm' => 'miesiąc',
             'y' => 'rok'),
         2 => array('s' => 'sekundy',
@@ -75,6 +75,10 @@ class TimeSpanPL extends AbstractTimeSpan {
 
     protected function getHalf() {
         return 'i pół';
+    }
+    
+    protected function getConjunctionWord() {
+        return 'i';
     }
 
     protected function getSuffix() {
