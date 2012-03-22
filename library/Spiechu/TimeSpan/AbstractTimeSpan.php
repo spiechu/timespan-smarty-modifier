@@ -66,6 +66,13 @@ abstract class AbstractTimeSpan {
      * @return string
      */
     abstract protected function getHalf();
+    
+    /**
+     * Returns translated 'and' string.
+     * 
+     * @return string
+     */
+    abstract protected function getConjunctionWord();
 
     /**
      * Returns translated 'ago' suffix.
@@ -122,23 +129,38 @@ abstract class AbstractTimeSpan {
             throw new TimeSpanException('Unknown interval');
         }
 
-        $timeUnit = $this->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
+        $timeUnit1 = $this->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
 
         $prefix = ($interval1['approx']) ? $this->getPrefix() . ' ' : '';
-        $half = ($interval1['half'] && $interval1['counter'] > 0) ? $this->getHalf() . ' ' : '';
         $suffix = ($this->_showSuffix) ? ' ' . $this->getSuffix() : '';
+        $half = ($interval1['half'] && $interval1['counter'] > 0) ? $this->getHalf() . ' ' : '';
 
+        $timeString = '';
         if ($interval1['counter'] > 1) {
-            return $prefix . $interval1['counter'] . ' ' . $half . $timeUnit . $suffix;
+            $timeString = $interval1['counter'] . ' ' . $half . $timeUnit1;
         } elseif ($interval1['counter'] >= 0) {
 
             // in case we don't have to show number of units
-            return $prefix . $timeUnit . ' ' . $half . $suffix;
+            $timeString = $timeUnit1 . ' ' . $half;
         } else {
 
             // in case of 'just now' -1 offset we don't need 'ago' suffix
-            return $timeUnit;
+            $timeString = $timeUnit1;
+            $suffix = '';
         }
+
+        if ($interval2 !== null && $half == '' && $interval1['almost'] == false) {
+            $timeString .= ' ' . $this->getConjunctionWord() . ' ';
+            $timeUnit2 = $this->getUnit($interval2['counter'], $interval2['unit'], $interval2['half']);
+            $prefix = ($interval1['approx'] || $interval2['approx']) ? $this->getPrefix() . ' ' : '';
+
+            if ($interval2['counter'] > 1) {
+                $timeString .= $interval2['counter'] . ' ' . $timeUnit2;
+            } else {
+                $timeString .= $timeUnit2;
+            }
+        }
+        return $prefix . $timeString . $suffix;
     }
 
     /**
@@ -320,7 +342,7 @@ abstract class AbstractTimeSpan {
     }
 
     protected function countSeconds(DateInterval $di) {
-        if ($di->s >= 0) {
+        if ($di->s > 0) {
             $array['almost'] = $this->almostFullUnit($di->s, 60);
 
             // is it almost a minute?
@@ -341,7 +363,7 @@ abstract class AbstractTimeSpan {
                 return $array;
             }
 
-            $array['counter'] = ($di->s > $this->_justNow) ? $di->s : -1;
+            $array['counter'] = ($di->s <= $this->_justNow && $di->i == 0) ? -1 : $di->s;
             $array['half'] = false;
             $array['unit'] = 's';
             $array['approx'] = false;
