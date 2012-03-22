@@ -36,8 +36,8 @@ $dates = array(
     new DateTime('40 second ago'),
     new DateTime('50 second ago'),
     new DateTime('55 second ago'),
-    new DateTime('5000 second ago'),
-    new DateTime('9000 second ago'),
+    new DateTime('65 second ago'),
+    new DateTime('75 second ago'),
     
     new DateTime('1 minute ago'),
     new DateTime('10 minute ago'),
@@ -47,6 +47,9 @@ $dates = array(
     new DateTime('45 minute ago'),
     new DateTime('43 minute ago'),
     new DateTime('55 minute ago'),
+    new DateTime('65 minute ago'),
+    new DateTime('85 minute ago'),
+    new DateTime('88 minute ago'),
     
     new DateTime('1 hour ago'),
     new DateTime('8 hour ago'),
