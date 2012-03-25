@@ -49,6 +49,12 @@ class TimeSpan {
      */
     protected $_timeUnit;
 
+    /**
+     * Sets language with two letters language code.
+     * 
+     * @param string $lang
+     * @return \Spiechu\TimeSpan\TimeSpan fluent interface
+     */
     public function setLanguage($lang) {
         $className = 'Spiechu\TimeSpan\TimeUnit\TimeUnit' . strtoupper($lang);
         if (class_exists($className)) {
@@ -70,7 +76,7 @@ class TimeSpan {
      * Show 'ago' suffix?
      * 
      * @param bool $suffix 
-     * @return AbstractTimeSpan fluent interface
+     * @return \Spiechu\TimeSpan\TimeSpan fluent interface
      */
     public function showSuffix($suffix) {
         $this->_showSuffix = $suffix;
@@ -81,7 +87,8 @@ class TimeSpan {
      * Start date setter to compute date interval.
      * 
      * @param \DateTime|int $startDateTime
-     * @return AbstractTimeSpan fluent interface
+     * @return \Spiechu\TimeSpan\TimeSpan fluent interface
+     * @throws Spiechu\TimeSpan\TimeSpanException when $startDateTime can't be resolved
      */
     public function setStartDate($startDateTime) {
         if ($startDateTime instanceof DateTime) {
@@ -101,7 +108,7 @@ class TimeSpan {
      * Returns translated string.
      * 
      * @return string
-     * @throws Spiechu\TimeSpan\TimeSpanException
+     * @throws Spiechu\TimeSpan\TimeSpanException when there is no interval
      */
     public function getTimeSpan() {
         $interval1 = null;
