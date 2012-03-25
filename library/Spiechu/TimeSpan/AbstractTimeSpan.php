@@ -42,6 +42,8 @@ abstract class AbstractTimeSpan {
      * @var float percentage tolerance to mark almost full unit true
      */
     protected $_almostFullTolerance = 15.0;
+    
+    protected $_isSpecialUnit = false;
 
     /**
      * Returns proper time unit string according to number of units.
@@ -135,7 +137,7 @@ abstract class AbstractTimeSpan {
 
         $prefix = ($interval1['approx']) ? $this->getPrefix() . ' ' : '';
         $suffix = ($this->_showSuffix) ? ' ' . $this->getSuffix() : '';
-        $half = ($interval1['half'] && $interval1['counter'] > 0) ? $this->getHalf() . ' ' : '';
+        $half = ($this->_isSpecialUnit == false && $interval1['half'] && $interval1['counter'] > 0) ? $this->getHalf() . ' ' : '';
 
         $timeString = '';
         if ($interval1['counter'] > 1) {
@@ -151,7 +153,7 @@ abstract class AbstractTimeSpan {
             $suffix = '';
         }
 
-        if ($interval2 !== null && $half == '' && $interval1['almost'] == false) {
+        if ($interval2 !== null && $interval1['half'] == false && $interval1['almost'] == false) {
             $timeString .= ' ' . $this->getConjunctionWord() . ' ';
             $timeUnit2 = $this->getUnit($interval2['counter'], $interval2['unit'], $interval2['half']);
             $prefix = ($interval1['approx'] || $interval2['approx']) ? $this->getPrefix() . ' ' : '';

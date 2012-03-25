@@ -64,6 +64,7 @@ class TimeSpanPL extends AbstractTimeSpan {
         } elseif ($howMany >= 2) {
             $howMany = 2;
         } elseif ($howMany == 1 && $half == true) {
+            $this->_isSpecialUnit = true;
             return $this->_specialUnits['poltora'][$unitSymbol];
         }
         return $this->_units[$howMany][$unitSymbol];
