@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Spiechu\TimeSpan;
+namespace Spiechu\TimeSpan\TimeUnit;
 
-class TimeSpanPL extends AbstractTimeSpan {
+class TimeUnitPL extends AbstractTimeUnit {
 
-    private $_units = array(
+    protected $_units = array(
         -1 => array('s' => 'przed chwilą'),
         0 => array('i' => 'pół minuty',
             'h' => 'pół godziny',
@@ -39,8 +39,7 @@ class TimeSpanPL extends AbstractTimeSpan {
             'm' => 'miesięcy',
             'y' => 'lat')
     );
-    
-    private $_specialUnits = array(
+    protected $_specialUnits = array(
         'poltora' => array('s' => 'półtorej sekundy', // currently not used
             'i' => 'półtorej minuty',
             'h' => 'półtorej godziny',
@@ -49,7 +48,7 @@ class TimeSpanPL extends AbstractTimeSpan {
             'y' => 'półtora roku')
     );
 
-    protected function getUnit($howMany, $unitSymbol, $half) {
+    public function getUnit($howMany, $unitSymbol, $half) {
         if ($howMany > 21) {
             $howMany = substr($howMany, -1);
             if ($howMany <= 1) {
@@ -70,19 +69,19 @@ class TimeSpanPL extends AbstractTimeSpan {
         return $this->_units[$howMany][$unitSymbol];
     }
 
-    protected function getPrefix() {
+    public function getPrefix() {
         return 'około';
     }
 
-    protected function getHalf() {
+    public function getHalf() {
         return 'i pół';
     }
-    
-    protected function getConjunctionWord() {
+
+    public function getConjunctionWord() {
         return 'i';
     }
 
-    protected function getSuffix() {
+    public function getSuffix() {
         return 'temu';
     }
 

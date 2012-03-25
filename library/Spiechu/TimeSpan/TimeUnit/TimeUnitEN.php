@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Spiechu\TimeSpan;
+namespace Spiechu\TimeSpan\TimeUnit;
 
-class TimeSpanEN extends AbstractTimeSpan {
+class TimeUnitEN extends AbstractTimeUnit {
 
-    private $_units = array(
+    protected $_units = array(
         -1 => array('s' => 'just now'),
         0 => array('i' => 'a half minute',
             'h' => 'a half hour',
@@ -34,24 +34,25 @@ class TimeSpanEN extends AbstractTimeSpan {
             'y' => 'years')
     );
 
-    protected function getUnit($howMany, $unitSymbol, $half) {
-        if ($howMany > 1) $howMany = 2;
+    public function getUnit($howMany, $unitSymbol, $half) {
+        if ($howMany > 1)
+            $howMany = 2;
         return $this->_units[$howMany][$unitSymbol];
     }
 
-    protected function getPrefix() {
+    public function getPrefix() {
         return 'about';
     }
 
-    protected function getHalf() {
+    public function getHalf() {
         return 'and half';
     }
-    
-    protected function getConjunctionWord() {
+
+    public function getConjunctionWord() {
         return 'and';
     }
 
-    protected function getSuffix() {
+    public function getSuffix() {
         return 'ago';
     }
 

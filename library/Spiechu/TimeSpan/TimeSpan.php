@@ -14,9 +14,10 @@ namespace Spiechu\TimeSpan;
 use \DateTime,
     \DateInterval,
     \array_push,
+    Spiechu\TimeSpan\TimeUnit\AbstractTimeUnit,
     Spiechu\TimeSpan\TimeSpanException;
 
-abstract class AbstractTimeSpan {
+class TimeSpan {
 
     /**
      * @var int seconds to show 'just now' instead of exact units 
@@ -42,49 +43,28 @@ abstract class AbstractTimeSpan {
      * @var float percentage tolerance to mark almost full unit true
      */
     protected $_almostFullTolerance = 15.0;
-    
-    /**
-     * @var bool marks if current unit is special
-     */
-    protected $_isSpecialUnit = false;
 
     /**
-     * Returns proper time unit string according to number of units.
-     * 
-     * @param int $howMany -1 means 'just now' unit
-     * @param string $unitSymbol it can be s,i,h,d,m,y
-     * @param bool $half
-     * @return string
+     * @var AbstractTimeUnit 
      */
-    abstract protected function getUnit($howMany, $unitSymbol, $half);
+    protected $_timeUnit;
 
-    /**
-     * Returns translated 'almost' prefix.
-     * 
-     * @return string
-     */
-    abstract protected function getPrefix();
+    public function setLanguage($lang) {
+        $className = 'Spiechu\TimeSpan\TimeUnit\TimeUnit' . strtoupper($lang);
+        if (class_exists($className)) {
+            $this->_timeUnit = new $className();
 
-    /**
-     * Returns translated 'and half' string.
-     * 
-     * @return string
-     */
-    abstract protected function getHalf();
+            // double check if class extends AbstractTimeUnit class
+            if (!($this->_timeUnit instanceof AbstractTimeUnit)) {
+                $this->_timeUnit = new TimeUnitEN();
+            }
+        } else {
 
-    /**
-     * Returns translated 'and' string.
-     * 
-     * @return string
-     */
-    abstract protected function getConjunctionWord();
-
-    /**
-     * Returns translated 'ago' suffix.
-     * 
-     * @return string
-     */
-    abstract protected function getSuffix();
+            // if unknown language or class doesn't extend AbstractTimeUnit, fall back to english
+            $this->_timeUnit = new TimeUnitEN();
+        }
+        return $this;
+    }
 
     /**
      * Show 'ago' suffix?
@@ -100,11 +80,20 @@ abstract class AbstractTimeSpan {
     /**
      * Start date setter to compute date interval.
      * 
-     * @param \DateTime $startDate
+     * @param \DateTime|int $startDateTime
      * @return AbstractTimeSpan fluent interface
      */
-    public function setStartDate(DateTime $startDate) {
-        $this->_startDate = $startDate;
+    public function setStartDate($startDateTime) {
+        if ($startDateTime instanceof DateTime) {
+            $this->_startDate = $startDateTime;
+
+            // if it's int, assume it's timestamp
+        } elseif (is_int($startDateTime)) {
+            $this->_startDate = new DateTime();
+            $this->_startDate->setTimestamp($startDateTime);
+        } else {
+            throw new TimeSpanException('Unknown startDateTime: ' . $startDateTime);
+        }
         return $this;
     }
 
@@ -136,11 +125,11 @@ abstract class AbstractTimeSpan {
             throw new TimeSpanException('Unknown interval');
         }
 
-        $timeUnit1 = $this->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
+        $timeUnit1 = $this->_timeUnit->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
 
-        $prefix = ($interval1['approx']) ? $this->getPrefix() . ' ' : '';
-        $suffix = ($this->_showSuffix) ? ' ' . $this->getSuffix() : '';
-        $half = ($this->_isSpecialUnit == false && $interval1['half'] && $interval1['counter'] > 0) ? $this->getHalf() . ' ' : '';
+        $prefix = ($interval1['approx']) ? $this->_timeUnit->getPrefix() . ' ' : '';
+        $suffix = ($this->_showSuffix) ? ' ' . $this->_timeUnit->getSuffix() : '';
+        $half = ($this->_timeUnit->isSpecialUnit() == false && $interval1['half'] && $interval1['counter'] > 0) ? $this->_timeUnit->getHalf() . ' ' : '';
 
         $timeString = '';
         if ($interval1['counter'] > 1) {
@@ -157,9 +146,9 @@ abstract class AbstractTimeSpan {
         }
 
         if ($interval2 !== null && $interval1['half'] == false && $interval1['almost'] == false) {
-            $timeString .= ' ' . $this->getConjunctionWord() . ' ';
-            $timeUnit2 = $this->getUnit($interval2['counter'], $interval2['unit'], $interval2['half']);
-            $prefix = ($interval1['approx'] || $interval2['approx']) ? $this->getPrefix() . ' ' : '';
+            $timeString .= ' ' . $this->_timeUnit->getConjunctionWord() . ' ';
+            $timeUnit2 = $this->_timeUnit->getUnit($interval2['counter'], $interval2['unit'], $interval2['half']);
+            $prefix = ($interval1['approx'] || $interval2['approx']) ? $this->_timeUnit->getPrefix() . ' ' : '';
 
             if ($interval2['counter'] > 1) {
                 $timeString .= $interval2['counter'] . ' ' . $timeUnit2;
