@@ -66,7 +66,7 @@ abstract class AbstractTimeSpan {
      * @return string
      */
     abstract protected function getHalf();
-    
+
     /**
      * Returns translated 'and' string.
      * 
@@ -113,19 +113,21 @@ abstract class AbstractTimeSpan {
         $interval1 = null;
         $interval2 = null;
         foreach ($this->getInterval() as $i) {
-            if (count($i) > 0) {
-                if ($interval1 === null) {
-                    $interval1 = $i;
-                    continue;
-                }
-                if ($interval2 === null) {
+            if (count($i) > 0 && $interval1 == null) {
+                $interval1 = $i;
+                continue;
+            }
+            if ($interval1 != null) {
+                if (count($i) == 0) {
+                    break;
+                } else {
                     $interval2 = $i;
-                    continue;
+                    break;
                 }
             }
         }
 
-        if ($interval1 === null) {
+        if ($interval1 == null) {
             throw new TimeSpanException('Unknown interval');
         }
 
