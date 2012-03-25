@@ -43,6 +43,9 @@ abstract class AbstractTimeSpan {
      */
     protected $_almostFullTolerance = 15.0;
     
+    /**
+     * @var bool marks if current unit is special
+     */
     protected $_isSpecialUnit = false;
 
     /**
