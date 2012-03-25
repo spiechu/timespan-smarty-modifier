@@ -53,7 +53,7 @@ class TimeSpan {
      * Sets language with two letters language code.
      * 
      * @param string $lang
-     * @return \Spiechu\TimeSpan\TimeSpan fluent interface
+     * @return TimeSpan fluent interface
      */
     public function setLanguage($lang) {
         $className = 'Spiechu\TimeSpan\TimeUnit\TimeUnit' . strtoupper($lang);
@@ -76,7 +76,7 @@ class TimeSpan {
      * Show 'ago' suffix?
      * 
      * @param bool $suffix 
-     * @return \Spiechu\TimeSpan\TimeSpan fluent interface
+     * @return TimeSpan fluent interface
      */
     public function showSuffix($suffix) {
         $this->_showSuffix = $suffix;
@@ -86,9 +86,9 @@ class TimeSpan {
     /**
      * Start date setter to compute date interval.
      * 
-     * @param \DateTime|int $startDateTime
-     * @return \Spiechu\TimeSpan\TimeSpan fluent interface
-     * @throws Spiechu\TimeSpan\TimeSpanException when $startDateTime can't be resolved
+     * @param DateTime|int $startDateTime
+     * @return TimeSpan fluent interface
+     * @throws TimeSpanException when $startDateTime can't be resolved
      */
     public function setStartDate($startDateTime) {
         if ($startDateTime instanceof DateTime) {
@@ -108,29 +108,11 @@ class TimeSpan {
      * Returns translated string.
      * 
      * @return string
-     * @throws Spiechu\TimeSpan\TimeSpanException when there is no interval
      */
     public function getTimeSpan() {
-        $interval1 = null;
-        $interval2 = null;
-        foreach ($this->getInterval() as $i) {
-            if (count($i) > 0 && $interval1 == null) {
-                $interval1 = $i;
-                continue;
-            }
-            if ($interval1 != null) {
-                if (count($i) == 0) {
-                    break;
-                } else {
-                    $interval2 = $i;
-                    break;
-                }
-            }
-        }
-
-        if ($interval1 == null) {
-            throw new TimeSpanException('Unknown interval');
-        }
+        $intervals = $this->resolveIntervals();
+        $interval1 = $intervals[0];
+        $interval2 = $intervals[1];
 
         $timeUnit1 = $this->_timeUnit->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
 
@@ -164,6 +146,37 @@ class TimeSpan {
             }
         }
         return $prefix . $timeString . $suffix;
+    }
+
+    /**
+     * Gets 2 greatest time intervals.
+     * 
+     * @return array
+     * @throws TimeSpanException 
+     */
+    protected function resolveIntervals() {
+        $interval1 = null;
+        $interval2 = null;
+        foreach ($this->getInterval() as $i) {
+            if (count($i) > 0 && $interval1 == null) {
+                $interval1 = $i;
+                continue;
+            }
+            if ($interval1 != null) {
+                if (count($i) == 0) {
+                    break;
+                } else {
+                    $interval2 = $i;
+                    break;
+                }
+            }
+        }
+
+        if ($interval1 == null) {
+            throw new TimeSpanException('Unknown interval');
+        }
+
+        return array(0 => $interval1, 1 => $interval2);
     }
 
     /**
@@ -377,6 +390,7 @@ class TimeSpan {
 
     /**
      * Return true if actual unit is within half unit scope including tolerance.
+     * 
      * @param int $actualUnit
      * @param int $fullUnit
      * @return bool 
@@ -389,6 +403,7 @@ class TimeSpan {
 
     /**
      * Return true if actual unit is near full unit scope including tolerance.
+     * 
      * @param int $actualUnit
      * @param int $fullUnit
      * @return bool
