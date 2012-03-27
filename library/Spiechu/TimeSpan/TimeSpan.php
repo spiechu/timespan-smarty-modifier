@@ -225,11 +225,7 @@ class TimeSpan {
 
             // is it a half year?
             if ($this->isHalfUnit($di->m, 12)) {
-                $array['counter'] = 0;
-                $array['half'] = false;
-                $array['unit'] = 'y';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillHalfUnitArray('y');
             }
 
             $array['counter'] = $di->m;
@@ -262,11 +258,7 @@ class TimeSpan {
 
             // is it a half month?
             if ($this->isHalfUnit($di->d, 30)) {
-                $array['counter'] = 0;
-                $array['half'] = false;
-                $array['unit'] = 'm';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillHalfUnitArray('m');
             }
 
             $array['counter'] = $di->d;
@@ -299,11 +291,7 @@ class TimeSpan {
 
             // is it a half of a day?
             if ($this->isHalfUnit($di->h, 24)) {
-                $array['counter'] = 0;
-                $array['half'] = false;
-                $array['unit'] = 'd';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillHalfUnitArray('d');
             }
 
             $array['counter'] = $di->h;
@@ -336,11 +324,7 @@ class TimeSpan {
 
             // is it a half of an hour?
             if ($this->isHalfUnit($di->i, 60)) {
-                $array['counter'] = 0;
-                $array['half'] = false;
-                $array['unit'] = 'h';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillHalfUnitArray('h');
             }
 
             $array['counter'] = $di->i;
@@ -366,7 +350,7 @@ class TimeSpan {
             $array['approx'] = false;
             return $array;
         }
-        
+
         if ($di->s > 0) {
             $array['almost'] = $this->almostFullUnit($di->s, 60);
 
@@ -381,11 +365,7 @@ class TimeSpan {
 
             // is it a half of a minute?
             if ($this->isHalfUnit($di->s, 60)) {
-                $array['counter'] = 0;
-                $array['half'] = true;
-                $array['unit'] = 'i';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillHalfUnitArray('i');
             }
 
             $array['counter'] = $di->s;
@@ -396,13 +376,20 @@ class TimeSpan {
         }
         return array();
     }
-    
+
+    protected function fillHalfUnitArray($unitSymbol) {
+        return array('counter' => 0,
+            'half' => true,
+            'unit' => $unitSymbol,
+            'approx' => true);
+    }
+
     protected function isJustNow(DateInterval $di) {
         return ($di->s <= $this->_justNow
-                    && $di->i == 0
-                    && $di->h == 0
-                    && $di->d == 0
-                    && $di->y == 0);
+                && $di->i == 0
+                && $di->h == 0
+                && $di->d == 0
+                && $di->y == 0);
     }
 
     /**
