@@ -357,6 +357,12 @@ class TimeSpan {
         return array();
     }
 
+    /**
+     * Fills array needed to construct timespan string.
+     * 
+     * @param string $unitSymbol 's,i,h,d,m,y'
+     * @return array 
+     */
     protected function fillHalfUnitArray($unitSymbol) {
         return array('counter' => 0,
             'half' => true,
@@ -364,6 +370,12 @@ class TimeSpan {
             'approx' => true);
     }
 
+    /**
+     * Fills array needed to construct timespan string.
+     * 
+     * @param string $unitSymbol 's,i,h,d,m,y'
+     * @return array 
+     */
     protected function fillFullUnitArray($unitSymbol) {
         return array('counter' => 1,
             'half' => false,
@@ -371,6 +383,10 @@ class TimeSpan {
             'approx' => true);
     }
 
+    /**
+     * @param DateInterval $di
+     * @return bool
+     */
     protected function isJustNow(DateInterval $di) {
         return ($di->s <= $this->_justNow
                 && $di->i == 0
