@@ -15,6 +15,7 @@ use \DateTime,
     \DateInterval,
     \array_push,
     Spiechu\TimeSpan\TimeUnit\AbstractTimeUnit,
+    Spiechu\TimeSpan\TimeUnit\TimeUnitEN,
     Spiechu\TimeSpan\TimeSpanException;
 
 class TimeSpan {
@@ -358,6 +359,14 @@ class TimeSpan {
     }
 
     protected function countSeconds(DateInterval $di) {
+        if ($this->isJustNow($di)) {
+            $array['counter'] = -1;
+            $array['half'] = false;
+            $array['unit'] = 's';
+            $array['approx'] = false;
+            return $array;
+        }
+        
         if ($di->s > 0) {
             $array['almost'] = $this->almostFullUnit($di->s, 60);
 
@@ -379,13 +388,21 @@ class TimeSpan {
                 return $array;
             }
 
-            $array['counter'] = ($di->s <= $this->_justNow && $di->i == 0) ? -1 : $di->s;
+            $array['counter'] = $di->s;
             $array['half'] = false;
             $array['unit'] = 's';
             $array['approx'] = false;
             return $array;
         }
         return array();
+    }
+    
+    protected function isJustNow(DateInterval $di) {
+        return ($di->s <= $this->_justNow
+                    && $di->i == 0
+                    && $di->h == 0
+                    && $di->d == 0
+                    && $di->y == 0);
     }
 
     /**
