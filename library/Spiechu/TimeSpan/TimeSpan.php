@@ -216,11 +216,7 @@ class TimeSpan {
 
             // is it almost a year?
             if ($array['almost']) {
-                $array['counter'] = 1;
-                $array['half'] = false;
-                $array['unit'] = 'y';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillFullUnitArray('y');
             }
 
             // is it a half year?
@@ -249,11 +245,7 @@ class TimeSpan {
 
             // is it almost a month?
             if ($array['almost']) {
-                $array['counter'] = 1;
-                $array['half'] = false;
-                $array['unit'] = 'm';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillFullUnitArray('m');
             }
 
             // is it a half month?
@@ -282,11 +274,7 @@ class TimeSpan {
 
             // is it almost a day?
             if ($array['almost']) {
-                $array['counter'] = 1;
-                $array['half'] = false;
-                $array['unit'] = 'd';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillFullUnitArray('d');
             }
 
             // is it a half of a day?
@@ -315,11 +303,7 @@ class TimeSpan {
 
             // is it almost an hour?
             if ($array['almost']) {
-                $array['counter'] = 1;
-                $array['half'] = false;
-                $array['unit'] = 'h';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillFullUnitArray('h');
             }
 
             // is it a half of an hour?
@@ -356,11 +340,7 @@ class TimeSpan {
 
             // is it almost a minute?
             if ($array['almost']) {
-                $array['counter'] = 1;
-                $array['half'] = false;
-                $array['unit'] = 'i';
-                $array['approx'] = true;
-                return $array;
+                return $this->fillFullUnitArray('i');
             }
 
             // is it a half of a minute?
@@ -380,6 +360,13 @@ class TimeSpan {
     protected function fillHalfUnitArray($unitSymbol) {
         return array('counter' => 0,
             'half' => true,
+            'unit' => $unitSymbol,
+            'approx' => true);
+    }
+
+    protected function fillFullUnitArray($unitSymbol) {
+        return array('counter' => 1,
+            'half' => false,
             'unit' => $unitSymbol,
             'approx' => true);
     }
