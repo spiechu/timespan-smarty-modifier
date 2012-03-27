@@ -11,6 +11,8 @@
 
 namespace Spiechu\TimeSpan\TimeUnit;
 
+use \Spiechu\TimeSpan\TimeSpanException;
+
 abstract class AbstractTimeUnit {
 
     /**
@@ -19,12 +21,54 @@ abstract class AbstractTimeUnit {
     protected $_isSpecialUnit = false;
     protected $_units = array();
     protected $_specialUnits = array();
+    protected $_isApproximated = false;
+    protected $_isHalved = false;
+    protected $_unitCount;
+    protected $_unitType;
 
     /**
      * @return bool 
      */
     public function isSpecialUnit() {
         return $this->_isSpecialUnit;
+    }
+
+    public function setApproximation($a) {
+        $this->_isApproximated = $a;
+        return $this;
+    }
+
+    public function isApproximated() {
+        return $this->_isApproximated;
+    }
+
+    public function setHalved($h) {
+        $this->_isHalved = $h;
+        return $this;
+    }
+
+    public function isHalfed() {
+        return $this->_isHalved;
+    }
+
+    public function setUnitCount($uc) {
+        $this->_unitCount = $uc;
+        return $this;
+    }
+
+    public function getUnitCount() {
+        return $this->_unitCount;
+    }
+
+    public function setUnitType($ut) {
+        if (!in_array($ut, array('s', 'i', 'h', 'd', 'm', 'y')))
+            throw new TimeSpanException("Unknown unit type: {$ut}");
+        $this->_unitType = $ut;
+        return $this;
+    }
+
+    public function getUnitType() {
+        return $this->_unitType;
     }
 
     /**
