@@ -21,7 +21,7 @@ abstract class AbstractTimeUnit {
     protected $_isSpecialUnit = false;
     protected $_units = array();
     protected $_specialUnits = array();
-    protected $_isApproximated = false;
+    protected $_trulyFullUnit = true;
     protected $_isHalved = false;
     protected $_unitCount;
     protected $_unitType;
@@ -33,13 +33,13 @@ abstract class AbstractTimeUnit {
         return $this->_isSpecialUnit;
     }
 
-    public function setApproximation($a) {
-        $this->_isApproximated = $a;
+    public function setTrulyFullUnit($tfu) {
+        $this->_trulyFullUnit = $tfu;
         return $this;
     }
 
-    public function isApproximated() {
-        return $this->_isApproximated;
+    public function isTrulyFullUnit() {
+        return $this->_trulyFullUnit;
     }
 
     public function setHalved($h) {
@@ -47,7 +47,7 @@ abstract class AbstractTimeUnit {
         return $this;
     }
 
-    public function isHalfed() {
+    public function isHalved() {
         return $this->_isHalved;
     }
 
@@ -58,6 +58,10 @@ abstract class AbstractTimeUnit {
 
     public function getUnitCount() {
         return $this->_unitCount;
+    }
+    
+    public function isApproximated() {
+        return ($this->_isHalved || (! $this->_trulyFullUnit));
     }
 
     public function setUnitType($ut) {
@@ -74,12 +78,9 @@ abstract class AbstractTimeUnit {
     /**
      * Returns proper time unit string according to number of units.
      * 
-     * @param int $howMany -1 means 'just now' unit
-     * @param string $unitSymbol it can be s,i,h,d,m,y
-     * @param bool $half
      * @return string
      */
-    abstract public function getUnit($howMany, $unitSymbol, $half);
+    abstract public function getUnit();
 
     /**
      * Returns translated 'almost' prefix.
