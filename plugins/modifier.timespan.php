@@ -12,15 +12,17 @@
 use Spiechu\TimeSpan\TimeSpan;
 
 /**
+ * To use modifier, just add |timespan in your template, e.g. {$date|timespan}.
+ * 
  * @param \DateTime|int $startDateTime \DateTime or timestamp to compute date interval
- * @param string $lang language of message; if can't find proper language - falls back on english
+ * @param string $lang language of message; if can't find proper language - falls back to english
  * @param bool $suffix show suffix?
- * @return string 
+ * @return string human readable string
  */
 function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) {
     $timeSpan = new TimeSpan();
     $timeSpan->setStartDate($startDateTime)
-             ->setLanguage($lang)
-             ->showSuffix($suffix);
+            ->setLanguage($lang)
+            ->showSuffix($suffix);
     return $timeSpan->getTimeSpan();
 }
