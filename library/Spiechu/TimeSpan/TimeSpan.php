@@ -54,10 +54,15 @@ class TimeSpan {
      * @var AbstractTimeUnit lesser part of interval
      */
     protected $_timeUnit2 = null;
+
+    /**
+     * @var string TimeUnit class name including namespaces to instantiate $_timeUnit1 nad $_timeUnit2
+     */
     protected $_localizedTimeUnitClassName = 'Spiechu\TimeSpan\TimeUnit\TimeUnitEN';
 
     /**
      * Sets language with two letters language code.
+     * Currently EN and PL are supported.
      * 
      * @param string $lang
      * @return TimeSpan fluent interface
@@ -107,12 +112,12 @@ class TimeSpan {
      * 
      * @return string
      */
-    public function getTimeSpan() {
+    public function getTimeSpanString() {
         $this->resolveIntervals();
         $prefix = ($this->_timeUnit1->isApproximated()) ? $this->_timeUnit1->getPrefix() . ' ' : '';
         $suffix = ($this->_showSuffix) ? ' ' . $this->_timeUnit1->getSuffix() : '';
         $half = ($this->_timeUnit1->isSpecialUnit() == false && $this->_timeUnit1->isHalved() && $this->_timeUnit1->getUnitCount() > 0) ? $this->_timeUnit1->getHalf() . ' ' : '';
-        
+
         $timeString = '';
         if ($this->_timeUnit1->getUnitCount() > 1) {
             $timeString = $this->_timeUnit1->getUnitCount() . ' ' . $half . $this->_timeUnit1->getUnitString();
@@ -127,6 +132,7 @@ class TimeSpan {
             $suffix = '';
         }
 
+        // add second part of timespan string
         if ($this->_timeUnit2 !== null && $this->_timeUnit1->isHalved() == false && $this->_timeUnit1->isTrulyFullUnit()) {
             $timeString .= ' ' . $this->_timeUnit1->getConjunctionWord() . ' ';
             $prefix = ($this->_timeUnit1->isApproximated() || $this->_timeUnit2->isApproximated()) ? $this->_timeUnit1->getPrefix() . ' ' : '';
@@ -141,9 +147,9 @@ class TimeSpan {
     }
 
     /**
-     * Sets 2 greatest time intervals.
+     * Sets 2 greatest time intervals in $_timeUnit1 and $_timeUnit2.
      * 
-     * @throws TimeSpanException 
+     * @throws TimeSpanException no interval is found
      */
     protected function resolveIntervals() {
         $this->_timeUnit1 = null;
@@ -376,6 +382,8 @@ class TimeSpan {
     }
 
     /**
+     * Returns true when timespan should be treated as 'just now'.
+     * 
      * @param DateInterval $di
      * @return bool
      */
@@ -388,7 +396,7 @@ class TimeSpan {
     }
 
     /**
-     * Return true if actual unit is within half unit scope including tolerance.
+     * Returns true if actual unit is within half unit scope including tolerance.
      * 
      * @param int $actualUnit
      * @param int $fullUnit
@@ -401,7 +409,7 @@ class TimeSpan {
     }
 
     /**
-     * Return true if actual unit is near full unit scope including tolerance.
+     * Returns true if actual unit is near full unit scope including tolerance.
      * 
      * @param int $actualUnit
      * @param int $fullUnit

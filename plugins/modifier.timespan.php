@@ -21,8 +21,9 @@ use Spiechu\TimeSpan\TimeSpan;
  */
 function smarty_modifier_timespan($startDateTime, $lang = 'EN', $suffix = true) {
     $timeSpan = new TimeSpan();
-    $timeSpan->setStartDate($startDateTime)
+    $timeSpan
+            ->setStartDate($startDateTime)
             ->setLanguage($lang)
             ->showSuffix($suffix);
-    return $timeSpan->getTimeSpan();
+    return $timeSpan->getTimeSpanString();
 }
