@@ -47,8 +47,18 @@ class TimeUnitPL extends AbstractTimeUnit {
             'm' => 'półtora miesiąca',
             'y' => 'półtora roku')
     );
+    
+    /**
+     * @return bool 
+     */
+    public function isSpecialUnit() {
+        $this->getUnit();
+        return $this->_isSpecialUnit;
+    }
 
-    public function getUnit($howMany, $unitSymbol, $half) {
+    public function getUnit() {
+        $howMany = $this->_unitCount;
+        dontKillMeForThis:
         if ($howMany > 21) {
             $howMany = substr($howMany, -1);
             if ($howMany <= 1) {
@@ -56,17 +66,17 @@ class TimeUnitPL extends AbstractTimeUnit {
             } else {
 
                 // we've got only one last digit now
-                return $this->getUnit($howMany, $unitSymbol, $half);
+                goto dontKillMeForThis;
             }
         } elseif ($howMany >= 5) {
             $howMany = 5;
         } elseif ($howMany >= 2) {
             $howMany = 2;
-        } elseif ($howMany == 1 && $half == true) {
+        } elseif ($howMany == 1 && $this->_isHalved) {
             $this->_isSpecialUnit = true;
-            return $this->_specialUnits['poltora'][$unitSymbol];
+            return $this->_specialUnits['poltora'][$this->_unitType];
         }
-        return $this->_units[$howMany][$unitSymbol];
+        return $this->_units[$howMany][$this->_unitType];
     }
 
     public function getPrefix() {

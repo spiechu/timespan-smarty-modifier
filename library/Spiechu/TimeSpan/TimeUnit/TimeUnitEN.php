@@ -34,10 +34,11 @@ class TimeUnitEN extends AbstractTimeUnit {
             'y' => 'years')
     );
 
-    public function getUnit($howMany, $unitSymbol, $half) {
+    public function getUnit() {
+        $howMany = $this->_unitCount;
         if ($howMany > 1)
             $howMany = 2;
-        return $this->_units[$howMany][$unitSymbol];
+        return $this->_units[$howMany][$this->_unitType];
     }
 
     public function getPrefix() {
