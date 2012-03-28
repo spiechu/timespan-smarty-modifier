@@ -46,7 +46,7 @@ class TimeUnitEN extends AbstractTimeUnit {
     }
 
     public function getHalf() {
-        return 'and half';
+        return 'and a half';
     }
 
     public function getConjunctionWord() {

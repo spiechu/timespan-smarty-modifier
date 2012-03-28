@@ -47,7 +47,7 @@ class TimeUnitPL extends AbstractTimeUnit {
             'm' => 'półtora miesiąca',
             'y' => 'półtora roku')
     );
-    
+
     /**
      * @return bool 
      */
