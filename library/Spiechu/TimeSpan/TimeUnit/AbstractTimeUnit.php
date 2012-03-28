@@ -23,47 +23,97 @@ abstract class AbstractTimeUnit {
     protected $_specialUnits = array();
     protected $_trulyFullUnit = true;
     protected $_isHalved = false;
+    /**
+     * @var int
+     */
     protected $_unitCount;
+    /**
+     * @var string 
+     */
     protected $_unitType;
 
     /**
+     * Returns true when unit has been taken from $_specialUnits array.
+     * 
      * @return bool 
      */
     public function isSpecialUnit() {
         return $this->_isSpecialUnit;
     }
 
+    /**
+     * Returns true when unit has not been approximated in any way.
+     * 
+     * @param bool $tfu
+     * @return AbstractTimeUnit fluent interface 
+     */
     public function setTrulyFullUnit($tfu) {
         $this->_trulyFullUnit = $tfu;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isTrulyFullUnit() {
         return $this->_trulyFullUnit;
     }
 
+    /**
+     * Should half unit need to be added apart from $_unitCount.
+     * 
+     * @param bool $h
+     * @return AbstractTimeUnit fluent interface
+     */
     public function setHalved($h) {
         $this->_isHalved = $h;
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function isHalved() {
         return $this->_isHalved;
     }
 
+    /**
+     * Set number of units.
+     * 
+     * @param int $uc
+     * @return AbstractTimeUnit fluent interface
+     */
     public function setUnitCount($uc) {
         $this->_unitCount = $uc;
         return $this;
     }
 
+    /**
+     * Get number of units.
+     * 
+     * @return int 
+     */
     public function getUnitCount() {
         return $this->_unitCount;
     }
     
+    /**
+     * Returns true when unit count was approximated 
+     * or 'and half' should be added.
+     * 
+     * @return bool
+     */
     public function isApproximated() {
         return ($this->_isHalved || (! $this->_trulyFullUnit));
     }
 
+    /**
+     * Unit type setter.
+     * 
+     * @param string $ut
+     * @return AbstractTimeUnit fluent interface
+     * @throws TimeSpanException when $ut is not one of 's', 'i', 'h', 'd', 'm', 'y'
+     */
     public function setUnitType($ut) {
         if (!in_array($ut, array('s', 'i', 'h', 'd', 'm', 'y')))
             throw new TimeSpanException("Unknown unit type: {$ut}");
@@ -71,6 +121,9 @@ abstract class AbstractTimeUnit {
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getUnitType() {
         return $this->_unitType;
     }
