@@ -46,9 +46,15 @@ class TimeSpan {
     protected $_almostFullTolerance = 15.0;
 
     /**
-     * @var AbstractTimeUnit 
+     * @var AbstractTimeUnit greater part of interval
      */
-    protected $_timeUnit;
+    protected $_timeUnit1 = null;
+
+    /**
+     * @var AbstractTimeUnit lesser part of interval
+     */
+    protected $_timeUnit2 = null;
+    protected $_localizedTimeUnitClassName = 'Spiechu\TimeSpan\TimeUnit\TimeUnitEN';
 
     /**
      * Sets language with two letters language code.
@@ -59,16 +65,7 @@ class TimeSpan {
     public function setLanguage($lang) {
         $className = 'Spiechu\TimeSpan\TimeUnit\TimeUnit' . strtoupper($lang);
         if (class_exists($className)) {
-            $this->_timeUnit = new $className();
-
-            // double check if class extends AbstractTimeUnit class
-            if (!($this->_timeUnit instanceof AbstractTimeUnit)) {
-                $this->_timeUnit = new TimeUnitEN();
-            }
-        } else {
-
-            // if unknown language or class doesn't extend AbstractTimeUnit, fall back to english
-            $this->_timeUnit = new TimeUnitEN();
+            $this->_localizedTimeUnitClassName = $className;
         }
         return $this;
     }
@@ -111,73 +108,74 @@ class TimeSpan {
      * @return string
      */
     public function getTimeSpan() {
-        $intervals = $this->resolveIntervals();
-        $interval1 = $intervals[0];
-        $interval2 = $intervals[1];
-
-        $timeUnit1 = $this->_timeUnit->getUnit($interval1['counter'], $interval1['unit'], $interval1['half']);
-
-        $prefix = ($interval1['approx']) ? $this->_timeUnit->getPrefix() . ' ' : '';
-        $suffix = ($this->_showSuffix) ? ' ' . $this->_timeUnit->getSuffix() : '';
-        $half = ($this->_timeUnit->isSpecialUnit() == false && $interval1['half'] && $interval1['counter'] > 0) ? $this->_timeUnit->getHalf() . ' ' : '';
-
+        $this->resolveIntervals();
+        $prefix = ($this->_timeUnit1->isApproximated()) ? $this->_timeUnit1->getPrefix() . ' ' : '';
+        $suffix = ($this->_showSuffix) ? ' ' . $this->_timeUnit1->getSuffix() : '';
+        $half = ($this->_timeUnit1->isSpecialUnit() == false && $this->_timeUnit1->isHalved() && $this->_timeUnit1->getUnitCount() > 0) ? $this->_timeUnit1->getHalf() . ' ' : '';
+        
         $timeString = '';
-        if ($interval1['counter'] > 1) {
-            $timeString = $interval1['counter'] . ' ' . $half . $timeUnit1;
-        } elseif ($interval1['counter'] >= 0) {
+        if ($this->_timeUnit1->getUnitCount() > 1) {
+            $timeString = $this->_timeUnit1->getUnitCount() . ' ' . $half . $this->_timeUnit1->getUnit();
+        } elseif ($this->_timeUnit1->getUnitCount() >= 0) {
 
             // in case we don't have to show number of units
-            $timeString = $timeUnit1 . ' ' . $half;
+            $timeString = $this->_timeUnit1->getUnit() . ' ' . $half;
         } else {
 
             // in case of 'just now' -1 offset we don't need 'ago' suffix
-            $timeString = $timeUnit1;
+            $timeString = $this->_timeUnit1->getUnit();
             $suffix = '';
         }
 
-        if ($interval2 !== null && $interval1['half'] == false && $interval1['almost'] == false) {
-            $timeString .= ' ' . $this->_timeUnit->getConjunctionWord() . ' ';
-            $timeUnit2 = $this->_timeUnit->getUnit($interval2['counter'], $interval2['unit'], $interval2['half']);
-            $prefix = ($interval1['approx'] || $interval2['approx']) ? $this->_timeUnit->getPrefix() . ' ' : '';
+        if ($this->_timeUnit2 !== null && $this->_timeUnit1->isHalved() == false && $this->_timeUnit1->isTrulyFullUnit()) {
+            $timeString .= ' ' . $this->_timeUnit1->getConjunctionWord() . ' ';
+            $prefix = ($this->_timeUnit1->isApproximated() || $this->_timeUnit2->isApproximated()) ? $this->_timeUnit1->getPrefix() . ' ' : '';
 
-            if ($interval2['counter'] > 1) {
-                $timeString .= $interval2['counter'] . ' ' . $timeUnit2;
+            if ($this->_timeUnit2->getUnitCount() > 1) {
+                $timeString .= $this->_timeUnit2->getUnitCount() . ' ' . $this->_timeUnit2->getUnit();
             } else {
-                $timeString .= $timeUnit2;
+                $timeString .= $this->_timeUnit2->getUnit();
             }
         }
         return $prefix . $timeString . $suffix;
     }
 
     /**
-     * Gets 2 greatest time intervals.
+     * Sets 2 greatest time intervals.
      * 
-     * @return array
      * @throws TimeSpanException 
      */
     protected function resolveIntervals() {
-        $interval1 = null;
-        $interval2 = null;
+        $this->_timeUnit1 = null;
+        $this->_timeUnit2 = null;
         foreach ($this->getInterval() as $i) {
-            if (count($i) > 0 && $interval1 == null) {
-                $interval1 = $i;
+            if (count($i) > 0 && $this->_timeUnit1 == null) {
+                $this->_timeUnit1 = new $this->_localizedTimeUnitClassName();
+                $this->_timeUnit1
+                        ->setTrulyFullUnit($i['almost'] ? false : true)
+                        ->setHalved($i['half'])
+                        ->setUnitCount($i['counter'])
+                        ->setUnitType($i['unit']);
                 continue;
             }
-            if ($interval1 != null) {
+            if ($this->_timeUnit1 != null) {
                 if (count($i) == 0) {
                     break;
                 } else {
-                    $interval2 = $i;
+                    $this->_timeUnit2 = new $this->_localizedTimeUnitClassName();
+                    $this->_timeUnit2
+                            ->setTrulyFullUnit($i['almost'] ? false : true)
+                            ->setHalved($i['half'])
+                            ->setUnitCount($i['counter'])
+                            ->setUnitType($i['unit']);
                     break;
                 }
             }
         }
 
-        if ($interval1 == null) {
+        if ($this->_timeUnit1 == null) {
             throw new TimeSpanException('Unknown interval');
         }
-
-        return array(0 => $interval1, 1 => $interval2);
     }
 
     /**
@@ -204,7 +202,6 @@ class TimeSpan {
             if ($array['almost']) {
                 ++$array['counter'];
             }
-            $array['approx'] = ($array['half'] || $array['almost']);
             return $array;
         }
         return array();
@@ -233,7 +230,6 @@ class TimeSpan {
             if ($array['almost']) {
                 ++$array['counter'];
             }
-            $array['approx'] = ($array['half'] || $array['almost']);
             return $array;
         }
         return array();
@@ -262,7 +258,6 @@ class TimeSpan {
             if ($array['almost']) {
                 ++$array['counter'];
             }
-            $array['approx'] = ($array['half'] || $array['almost']);
             return $array;
         }
         return array();
@@ -291,7 +286,6 @@ class TimeSpan {
             if ($array['almost']) {
                 ++$array['counter'];
             }
-            $array['approx'] = ($array['half'] || $array['almost']);
             return $array;
         }
         return array();
@@ -320,7 +314,6 @@ class TimeSpan {
             if ($array['almost']) {
                 ++$array['counter'];
             }
-            $array['approx'] = ($array['half'] || $array['almost']);
             return $array;
         }
         return array();
@@ -331,7 +324,7 @@ class TimeSpan {
             $array['counter'] = -1;
             $array['half'] = false;
             $array['unit'] = 's';
-            $array['approx'] = false;
+            $array['almost'] = false;
             return $array;
         }
 
@@ -351,7 +344,6 @@ class TimeSpan {
             $array['counter'] = $di->s;
             $array['half'] = false;
             $array['unit'] = 's';
-            $array['approx'] = false;
             return $array;
         }
         return array();
@@ -367,7 +359,7 @@ class TimeSpan {
         return array('counter' => 0,
             'half' => true,
             'unit' => $unitSymbol,
-            'approx' => true);
+            'almost' => false);
     }
 
     /**
@@ -380,7 +372,7 @@ class TimeSpan {
         return array('counter' => 1,
             'half' => false,
             'unit' => $unitSymbol,
-            'approx' => true);
+            'almost' => true);
     }
 
     /**
