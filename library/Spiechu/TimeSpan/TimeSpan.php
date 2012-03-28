@@ -115,15 +115,15 @@ class TimeSpan {
         
         $timeString = '';
         if ($this->_timeUnit1->getUnitCount() > 1) {
-            $timeString = $this->_timeUnit1->getUnitCount() . ' ' . $half . $this->_timeUnit1->getUnit();
+            $timeString = $this->_timeUnit1->getUnitCount() . ' ' . $half . $this->_timeUnit1->getUnitString();
         } elseif ($this->_timeUnit1->getUnitCount() >= 0) {
 
             // in case we don't have to show number of units
-            $timeString = $this->_timeUnit1->getUnit() . ' ' . $half;
+            $timeString = $this->_timeUnit1->getUnitString() . ' ' . $half;
         } else {
 
             // in case of 'just now' -1 offset we don't need 'ago' suffix
-            $timeString = $this->_timeUnit1->getUnit();
+            $timeString = $this->_timeUnit1->getUnitString();
             $suffix = '';
         }
 
@@ -132,9 +132,9 @@ class TimeSpan {
             $prefix = ($this->_timeUnit1->isApproximated() || $this->_timeUnit2->isApproximated()) ? $this->_timeUnit1->getPrefix() . ' ' : '';
 
             if ($this->_timeUnit2->getUnitCount() > 1) {
-                $timeString .= $this->_timeUnit2->getUnitCount() . ' ' . $this->_timeUnit2->getUnit();
+                $timeString .= $this->_timeUnit2->getUnitCount() . ' ' . $this->_timeUnit2->getUnitString();
             } else {
-                $timeString .= $this->_timeUnit2->getUnit();
+                $timeString .= $this->_timeUnit2->getUnitString();
             }
         }
         return $prefix . $timeString . $suffix;

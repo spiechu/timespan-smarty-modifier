@@ -34,7 +34,7 @@ class TimeUnitEN extends AbstractTimeUnit {
             'y' => 'years')
     );
 
-    public function getUnit() {
+    public function getUnitString() {
         $howMany = $this->_unitCount;
         if ($howMany > 1)
             $howMany = 2;

@@ -23,10 +23,12 @@ abstract class AbstractTimeUnit {
     protected $_specialUnits = array();
     protected $_trulyFullUnit = true;
     protected $_isHalved = false;
+
     /**
      * @var int
      */
     protected $_unitCount;
+
     /**
      * @var string 
      */
@@ -96,7 +98,7 @@ abstract class AbstractTimeUnit {
     public function getUnitCount() {
         return $this->_unitCount;
     }
-    
+
     /**
      * Returns true when unit count was approximated 
      * or 'and half' should be added.
@@ -104,7 +106,7 @@ abstract class AbstractTimeUnit {
      * @return bool
      */
     public function isApproximated() {
-        return ($this->_isHalved || (! $this->_trulyFullUnit));
+        return ($this->_isHalved || (!$this->_trulyFullUnit));
     }
 
     /**
@@ -133,7 +135,7 @@ abstract class AbstractTimeUnit {
      * 
      * @return string
      */
-    abstract public function getUnit();
+    abstract public function getUnitString();
 
     /**
      * Returns translated 'almost' prefix.

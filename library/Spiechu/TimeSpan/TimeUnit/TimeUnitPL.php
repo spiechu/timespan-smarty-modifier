@@ -52,11 +52,11 @@ class TimeUnitPL extends AbstractTimeUnit {
      * @return bool 
      */
     public function isSpecialUnit() {
-        $this->getUnit();
+        $this->getUnitString();
         return $this->_isSpecialUnit;
     }
 
-    public function getUnit() {
+    public function getUnitString() {
         $howMany = $this->_unitCount;
         dontKillMeForThis:
         if ($howMany > 21) {
