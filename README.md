@@ -35,7 +35,7 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 Library also needs to be registered for autoload. It uses standard SplClassLoader, for example:
 
-```php
+```PHP
 require_once 'SplClassLoader.php';
 $classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
 $classLoader->register();
@@ -45,7 +45,7 @@ $classLoader->register();
 
 In Your PHP script assign DateTime object or timestamp integer for example like:
 
-```php
+```PHP
 $smarty->assign('date', new DateTime('1 second ago'));
 // or
 $smarty->assign('date', time() - 1);
@@ -54,12 +54,12 @@ $smarty->assign('date', time() - 1);
 and then in template:
 
 ```smarty
-    {$date|timespan}
+{$date|timespan}
 ```
 
 output will be:
 
-```
+```smarty
 just now
 ```
     
