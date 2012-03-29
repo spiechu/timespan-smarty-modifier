@@ -27,6 +27,7 @@ There is also a special polish expression for 1.5 unit called `półtora`/`pół
 
 Modifier is being written on Smarty 3.1.8, so I can't guarantee it will work on version < 3.0.
 You also need at least PHP 5.3 since library uses namespaces. No external libraries needed.
+If You want to run unit tests, PHPUnit 3.6 is needed.
 
 ## Installation
 
@@ -35,7 +36,9 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 Library also needs to be registered for autoload. It uses standard SplClassLoader, for example:
 
-```PHP
+```php
+<?php
+
 require_once 'SplClassLoader.php';
 $classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
 $classLoader->register();
@@ -45,7 +48,9 @@ $classLoader->register();
 
 In Your PHP script assign DateTime object or timestamp integer for example like:
 
-```PHP
+```php
+<?php
+
 $smarty->assign('date', new DateTime('1 second ago'));
 // or
 $smarty->assign('date', time() - 1);
