@@ -66,6 +66,13 @@ output will be:
 just now
 ```
 
+You can modify language and suffix 'ago' displaying for example:
+
+```smarty
+{$date|timespan:'PL'}
+{$date|timespan:'EN':false}
+```
+
 You can also use library without Smarty:
 
 ```php
@@ -77,14 +84,5 @@ $timeSpan
          ->showSuffix($suffix); // true or false
 return $timeSpan->getTimeSpanString();
 ```
-    
-Default value for `just now` and all other foreign language equivalents is <= 10 seconds.
 
-You can modify language and suffix 'ago' displaying for example:
-
-```smarty
-{$date|timespan:'PL'}
-{$date|timespan:'EN':false}
-```
-    
 If there is only one certain unit, numeric value is omitted. For example `a minute ago`, `an hour ago`...
