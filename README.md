@@ -36,9 +36,8 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 Library also needs to be registered for autoload. It uses standard SplClassLoader, for example:
 
-```php
-<?php
-
+:::php startinline
+```php startinline
 require_once 'SplClassLoader.php';
 $classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
 $classLoader->register();
