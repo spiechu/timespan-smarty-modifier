@@ -50,7 +50,7 @@ $smarty->assign('date', new DateTime('1 second ago'));
 // or
 $smarty->assign('date', time() - 1);
 ```
-  
+
 and then in template:
 
 ```smarty
