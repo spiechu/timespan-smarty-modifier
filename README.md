@@ -31,16 +31,20 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 Library also needs to be registered for autoload. It uses standard SplClassLoader, for example:
 
-    require_once 'SplClassLoader.php';
-    $classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
-    $classLoader->register();
+```php
+require_once 'SplClassLoader.php';
+$classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
+$classLoader->register();
+```
 
 ## Usage
 
 In Your PHP script assign DateTime object or timestamp integer for example like:
 
-    $smarty->assign('date', new DateTime('1 second ago'));
-  
+```php
+$smarty->assign('date', new DateTime('1 second ago'));
+```
+
 and then in template:
 
     {$date|timespan}
