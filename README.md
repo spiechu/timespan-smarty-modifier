@@ -67,6 +67,7 @@ just now
 ```
 
 You can also use library without Smarty:
+
 ```php
 <?php
 $timeSpan = new TimeSpan();
