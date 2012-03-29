@@ -19,7 +19,7 @@ Polish numeral inflection is well known for its variety. It has 3 numeral inflec
 
 Notice that `about` shows up when some time is approximated.
 
-`about` and `ago` can be turned off.
+`ago` can be turned off.
 
 There is also a special polish expression for 1.5 unit called `półtora`/`półtorej`. These special cases are also included in library.                                                                                 
 
@@ -36,8 +36,8 @@ For the sake of readability, modifier file has been thrown into separate plugin 
 
 Library also needs to be registered for autoload. It uses standard SplClassLoader, for example:
 
-:::php startinline
-```php startinline
+```php
+<?php
 require_once 'SplClassLoader.php';
 $classLoader = new SplClassLoader('Spiechu\TimeSpan' , 'library');
 $classLoader->register();
@@ -49,7 +49,6 @@ In Your PHP script assign DateTime object or timestamp integer for example like:
 
 ```php
 <?php
-
 $smarty->assign('date', new DateTime('1 second ago'));
 // or
 $smarty->assign('date', time() - 1);
@@ -65,6 +64,17 @@ output will be:
 
 ```smarty
 just now
+```
+
+You can also use library without Smarty:
+```php
+<?php
+$timeSpan = new TimeSpan();
+$timeSpan
+         ->setStartDate($startDateTime) // DateTime or timestamp
+         ->setLanguage($lang) // 'EN' or 'PL'
+         ->showSuffix($suffix); // true or false
+return $timeSpan->getTimeSpanString();
 ```
     
 Default value for `just now` and all other foreign language equivalents is <= 10 seconds.
