@@ -49,7 +49,7 @@ class TimeUnitPL extends AbstractTimeUnit {
     );
 
     /**
-     * @return bool 
+     * @todo create a new method to check if time unit is special
      */
     public function isSpecialUnit() {
         $this->getUnitString();
@@ -58,6 +58,7 @@ class TimeUnitPL extends AbstractTimeUnit {
 
     public function getUnitString() {
         $howMany = $this->_unitCount;
+        
         dontKillMeForThis:
         if ($howMany > 21) {
             $howMany = substr($howMany, -1);
