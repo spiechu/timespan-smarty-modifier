@@ -36,8 +36,9 @@ class TimeUnitEN extends AbstractTimeUnit {
 
     public function getUnitString() {
         $howMany = $this->_unitCount;
-        if ($howMany > 1)
+        if ($howMany > 1) {
             $howMany = 2;
+        }
         return $this->_units[$howMany][$this->_unitType];
     }
 
