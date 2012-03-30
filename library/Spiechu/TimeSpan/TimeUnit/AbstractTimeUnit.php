@@ -16,26 +16,44 @@ use \Spiechu\TimeSpan\TimeSpanException;
 abstract class AbstractTimeUnit {
 
     /**
-     * @var bool marks if current unit is special
+     * @var bool marks if current time unit is special
      */
     protected $_isSpecialUnit = false;
-    protected $_units = array();
-    protected $_specialUnits = array();
+    
+    /**
+     * @var array associated array with standard time unit inflection
+     * @see TimeUnitEN
+     */
+    protected $_units;
+    
+    /**
+     * @var array associated array with special time units
+     * @see TimeUnitPL
+     */
+    protected $_specialUnits;
+    
+    /**
+     * @var bool false when time unit was approximated
+     */
     protected $_trulyFullUnit = true;
+    
+    /**
+     * @var bool true when we need to add 'and a half' to current time unit count
+     */
     protected $_isHalved = false;
 
     /**
-     * @var int
+     * @var int number of time units
      */
     protected $_unitCount;
 
     /**
-     * @var string 
+     * @var string time unit type
      */
     protected $_unitType;
 
     /**
-     * Returns true when unit has been taken from $_specialUnits array.
+     * Returns true when time unit has been taken from $_specialUnits array.
      * 
      * @return bool 
      */
@@ -44,7 +62,7 @@ abstract class AbstractTimeUnit {
     }
 
     /**
-     * Returns true when unit has not been approximated in any way.
+     * Set if time unit has been approximated.
      * 
      * @param bool $tfu
      * @return AbstractTimeUnit fluent interface 
@@ -55,6 +73,8 @@ abstract class AbstractTimeUnit {
     }
 
     /**
+     * Returns true when unit has not been approximated in any way.
+     *
      * @return bool
      */
     public function isTrulyFullUnit() {
@@ -73,6 +93,8 @@ abstract class AbstractTimeUnit {
     }
 
     /**
+     * Do we need to add 'and a half' to current time unit?
+     *
      * @return bool
      */
     public function isHalved() {
@@ -80,7 +102,7 @@ abstract class AbstractTimeUnit {
     }
 
     /**
-     * Set number of units.
+     * Set number of time units.
      * 
      * @param int $uc
      * @return AbstractTimeUnit fluent interface
@@ -91,7 +113,7 @@ abstract class AbstractTimeUnit {
     }
 
     /**
-     * Get number of units.
+     * Get number of time units.
      * 
      * @return int 
      */
@@ -100,17 +122,16 @@ abstract class AbstractTimeUnit {
     }
 
     /**
-     * Returns true when unit count was approximated 
-     * or 'and half' should be added.
+     * Returns true when time unit count was approximated or 'and a half' should be added.
      * 
      * @return bool
      */
     public function isApproximated() {
-        return ($this->_isHalved || (!$this->_trulyFullUnit));
+        return ($this->_isHalved || (! $this->_trulyFullUnit));
     }
 
     /**
-     * Unit type setter.
+     * Time unit type setter.
      * 
      * @param string $ut
      * @return AbstractTimeUnit fluent interface
@@ -124,6 +145,8 @@ abstract class AbstractTimeUnit {
     }
 
     /**
+     * Returns time unit type.
+     *
      * @return string
      */
     public function getUnitType() {
@@ -131,7 +154,7 @@ abstract class AbstractTimeUnit {
     }
 
     /**
-     * Returns proper time unit string according to number of units.
+     * Returns proper time unit string according to number of time units.
      * 
      * @return string
      */
@@ -145,7 +168,7 @@ abstract class AbstractTimeUnit {
     abstract public function getPrefix();
 
     /**
-     * Returns translated 'and half' string.
+     * Returns translated 'and a half' string.
      * 
      * @return string
      */
