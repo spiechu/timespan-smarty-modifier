@@ -40,7 +40,7 @@ class TimeUnitPL extends AbstractTimeUnit {
             'y' => 'lat')
     );
     protected $_specialUnits = array(
-        'poltora' => array('s' => 'półtorej sekundy', // currently not used
+        'poltora' => array('s' => 'półtorej sekundy', // actually not used
             'i' => 'półtorej minuty',
             'h' => 'półtorej godziny',
             'd' => 'półtora dnia',
